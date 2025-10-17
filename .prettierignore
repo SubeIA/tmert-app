@@ -1,0 +1,23 @@
+# Directories
+dist/
+node_modules/
+coverage/
+.angular/
+
+# Files
+*.log
+*.lock
+package-lock.json
+yarn.lock
+
+# Build outputs
+*.js.map
+*.css.map
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

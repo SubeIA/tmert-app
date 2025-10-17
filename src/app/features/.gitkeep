@@ -1,0 +1,8 @@
+# Features directory
+# Place feature modules here (each feature in its own folder)
+# Example structure:
+# features/
+#   └── user-management/
+#       ├── components/
+#       ├── services/
+#       └── user-management.routes.ts
