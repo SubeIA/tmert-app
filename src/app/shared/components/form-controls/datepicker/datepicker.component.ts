@@ -1,11 +1,26 @@
-import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  forwardRef,
+  OnInit,
+  inject,
+  Injector,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
+import {
+  ControlValueAccessor,
+  NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+  NgControl,
+} from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
+import { ErrorMessageComponent } from '../../error-message/error-message.component';
 
 @Component({
   selector: 'app-datepicker',
@@ -18,6 +33,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatDatepickerModule,
     MatNativeDateModule,
     MatIconModule,
+    ErrorMessageComponent,
   ],
   templateUrl: './datepicker.component.html',
   styleUrl: './datepicker.component.scss',
@@ -29,7 +45,7 @@ import { MatIconModule } from '@angular/material/icon';
     },
   ],
 })
-export class DatepickerComponent implements ControlValueAccessor {
+export class DatepickerComponent implements ControlValueAccessor, OnInit {
   @Input() label = '';
   @Input() placeholder = '';
   @Input() appearance: 'fill' | 'outline' = 'outline';
@@ -38,16 +54,26 @@ export class DatepickerComponent implements ControlValueAccessor {
   @Input() minDate?: Date;
   @Input() maxDate?: Date;
   @Input() hint = '';
-  @Input() errorMessage = '';
 
   @Output() valueChange = new EventEmitter<Date | null>();
 
   value: Date | null = null;
+  ngControl: NgControl | null = null;
+
+  private injector = inject(Injector);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
   private onChange: (value: Date | null) => void = (_value: Date | null) => {};
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   onTouched: () => void = () => {};
+
+  ngOnInit(): void {
+    try {
+      this.ngControl = this.injector.get(NgControl, null);
+    } catch {
+      this.ngControl = null;
+    }
+  }
 
   writeValue(value: Date | null): void {
     this.value = value;

@@ -1,12 +1,5 @@
+@use "../../../../../assets/scss/form-controls" as form;
+
 :host {
-  display: block;
-  width: 100%;
-}
-
-.full-width {
-  width: 100%;
-}
-
-mat-form-field {
-  width: 100%;
+  @include form.select-styles;
 }

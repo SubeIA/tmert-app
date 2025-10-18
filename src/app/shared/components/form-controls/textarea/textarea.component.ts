@@ -1,13 +1,34 @@
-import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  forwardRef,
+  OnInit,
+  inject,
+  Injector,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
+import {
+  ControlValueAccessor,
+  NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+  NgControl,
+} from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { ErrorMessageComponent } from '../../error-message/error-message.component';
 
 @Component({
   selector: 'app-textarea',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ErrorMessageComponent,
+  ],
   templateUrl: './textarea.component.html',
   styleUrl: './textarea.component.scss',
   providers: [
@@ -18,7 +39,7 @@ import { MatInputModule } from '@angular/material/input';
     },
   ],
 })
-export class TextareaComponent implements ControlValueAccessor {
+export class TextareaComponent implements ControlValueAccessor, OnInit {
   @Input() label = '';
   @Input() placeholder = '';
   @Input() appearance: 'fill' | 'outline' = 'outline';
@@ -28,16 +49,26 @@ export class TextareaComponent implements ControlValueAccessor {
   @Input() rows = 4;
   @Input() maxLength?: number;
   @Input() hint = '';
-  @Input() errorMessage = '';
 
   @Output() valueChange = new EventEmitter<string>();
 
   value = '';
+  ngControl: NgControl | null = null;
+
+  private injector = inject(Injector);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
   private onChange: (value: string) => void = (_value: string) => {};
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   onTouched: () => void = () => {};
+
+  ngOnInit(): void {
+    try {
+      this.ngControl = this.injector.get(NgControl, null);
+    } catch {
+      this.ngControl = null;
+    }
+  }
 
   writeValue(value: string): void {
     this.value = value || '';

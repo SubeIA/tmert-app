@@ -18,5 +18,5 @@
   <mat-datepicker #picker></mat-datepicker>
 
   <mat-hint *ngIf="hint">{{ hint }}</mat-hint>
-  <mat-error *ngIf="errorMessage">{{ errorMessage }}</mat-error>
+  <app-error-message [control]="ngControl?.control ?? null"></app-error-message>
 </mat-form-field>

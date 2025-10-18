@@ -18,5 +18,8 @@
   <mat-icon *ngIf="prefixIcon" matPrefix>{{ prefixIcon }}</mat-icon>
 
   <mat-hint *ngIf="hint">{{ hint }}</mat-hint>
-  <mat-error *ngIf="errorMessage">{{ errorMessage }}</mat-error>
+  <app-error-message
+    [control]="ngControl?.control || null"
+    [fieldName]="'select'"
+  ></app-error-message>
 </mat-form-field>

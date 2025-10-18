@@ -38,5 +38,5 @@
   <mat-hint *ngIf="hint" align="start">{{ hint }}</mat-hint>
   <mat-hint *ngIf="maxLength" align="end">{{ value.length }} / {{ maxLength }}</mat-hint>
 
-  <mat-error *ngIf="errorMessage">{{ errorMessage }}</mat-error>
+  <app-error-message [control]="ngControl?.control || null" [fieldName]="type"></app-error-message>
 </mat-form-field>

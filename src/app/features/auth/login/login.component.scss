@@ -1,3 +1,5 @@
+@use "../../../../assets/scss/form-controls" as form;
+
 :host {
   display: block;
   height: 100vh;
@@ -195,18 +197,13 @@
 
 // Form
 .login-form {
-  mat-form-field {
-    margin-bottom: 16px;
+  .error-message {
+    @include form.form-error-message;
+  }
 
-    ::ng-deep {
-      .mat-mdc-text-field-wrapper {
-        background-color: #f8f9fa;
-      }
-
-      .mat-mdc-form-field-focus-overlay {
-        background-color: transparent;
-      }
-    }
+  app-input {
+    display: block;
+    margin-bottom: 8px;
   }
 }
 

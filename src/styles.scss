@@ -1,5 +1,6 @@
 @use "@angular/material" as mat;
 @use "./styles/theme" as theme;
+@use "./assets/scss/form-controls" as form;
 
 :root {
   --tmert-primary: #4b69ce; /* base blue */

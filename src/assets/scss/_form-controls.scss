@@ -1,0 +1,255 @@
+// =============================================================================
+// Form Controls - Estilos globales para componentes reutilizables
+// =============================================================================
+
+// Variables
+$error-color: #f44336;
+$hint-color: rgba(0, 0, 0, 0.6);
+$border-hover-color: rgba(0, 0, 0, 0.87);
+$transition-speed: 0.2s;
+$form-control-margin: 1rem;
+$error-font-size: 0.875rem;
+$hint-font-size: 0.875rem;
+
+// =============================================================================
+// Estilos Base para Form Fields
+// =============================================================================
+
+@mixin form-field-base {
+  display: block;
+  width: 100%;
+  margin-bottom: $form-control-margin;
+
+  .full-width {
+    width: 100%;
+  }
+
+  mat-form-field {
+    width: 100%;
+
+    &.mat-form-field-appearance-outline {
+      .mat-mdc-form-field-error-wrapper {
+        padding: 0;
+      }
+
+      .mat-mdc-text-field-wrapper {
+        padding-bottom: 0;
+      }
+    }
+  }
+}
+
+// =============================================================================
+// Estilos para Errores y Hints
+// =============================================================================
+
+@mixin form-field-error-styles {
+  .mat-mdc-form-field-error {
+    color: $error-color !important;
+    font-size: $error-font-size;
+    margin-top: 0.25rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .mat-mdc-form-field-hint {
+    color: $hint-color;
+    font-size: $hint-font-size;
+  }
+
+  &.mat-form-field-invalid {
+    .mat-mdc-notch-piece {
+      border-color: $error-color !important;
+    }
+
+    .mat-mdc-floating-label {
+      color: $error-color !important;
+    }
+  }
+}
+
+// =============================================================================
+// Estilos de Interacción (hover, focus, etc)
+// =============================================================================
+
+@mixin form-field-interactions {
+  .mat-mdc-text-field-wrapper {
+    transition: all $transition-speed ease-in-out;
+
+    &:hover:not(.mat-form-field-disabled) {
+      .mat-mdc-notch-piece {
+        border-color: $border-hover-color;
+      }
+    }
+  }
+
+  .mat-mdc-form-field-focus-overlay {
+    background-color: transparent;
+  }
+}
+
+// =============================================================================
+// Estilos específicos por tipo de control
+// =============================================================================
+
+// Input & Textarea
+@mixin input-textarea-styles {
+  @include form-field-base;
+
+  ::ng-deep {
+    mat-form-field {
+      @include form-field-error-styles;
+      @include form-field-interactions;
+    }
+  }
+}
+
+// Select
+@mixin select-styles {
+  @include form-field-base;
+
+  ::ng-deep {
+    mat-form-field {
+      @include form-field-error-styles;
+      @include form-field-interactions;
+
+      .mat-mdc-select-arrow-wrapper {
+        transform: translateY(-8px);
+      }
+
+      .mat-mdc-select-trigger {
+        transition: all $transition-speed ease-in-out;
+      }
+    }
+  }
+}
+
+// Datepicker
+@mixin datepicker-styles {
+  @include form-field-base;
+
+  ::ng-deep {
+    mat-form-field {
+      @include form-field-error-styles;
+      @include form-field-interactions;
+
+      .mat-datepicker-toggle {
+        button {
+          transition: all $transition-speed ease-in-out;
+
+          &:hover {
+            transform: scale(1.1);
+          }
+        }
+      }
+    }
+  }
+}
+
+// Checkbox
+@mixin checkbox-styles {
+  display: block;
+  margin-bottom: $form-control-margin;
+
+  mat-checkbox {
+    font-size: 1rem;
+
+    ::ng-deep {
+      .mdc-form-field {
+        align-items: center;
+      }
+
+      .mdc-checkbox__background {
+        transition: all $transition-speed ease-in-out;
+      }
+
+      &:hover .mdc-checkbox__background {
+        transform: scale(1.05);
+      }
+
+      .mdc-label {
+        color: rgba(0, 0, 0, 0.87);
+        font-weight: 400;
+      }
+    }
+  }
+}
+
+// Textarea específico
+@mixin textarea-specific {
+  textarea {
+    resize: vertical;
+    min-height: 60px;
+    line-height: 1.5;
+    font-family: inherit;
+    transition: all $transition-speed ease-in-out;
+
+    &:focus {
+      outline: none;
+    }
+  }
+}
+
+// =============================================================================
+// Clases y mixins de utilidad para mensajes de error
+// =============================================================================
+
+@mixin form-error-message {
+  background: #ffebee;
+  color: #c62828;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  border-left: 4px solid $error-color;
+  display: block;
+  animation: slideDown 0.3s ease-out;
+}
+
+.form-error-message {
+  @include form-error-message;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// =============================================================================
+// Estilos para estados disabled
+// =============================================================================
+
+@mixin disabled-state {
+  &.mat-form-field-disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+
+    .mat-mdc-text-field-wrapper {
+      background-color: #f5f5f5;
+    }
+  }
+}
+
+// =============================================================================
+// Aplicar estilos globales a todos los form fields
+// =============================================================================
+
+.app-input,
+.app-textarea,
+.app-select,
+.app-datepicker {
+  ::ng-deep {
+    mat-form-field {
+      @include disabled-state;
+    }
+  }
+}

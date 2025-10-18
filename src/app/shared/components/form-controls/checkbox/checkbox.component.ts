@@ -1,12 +1,27 @@
-import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  forwardRef,
+  OnInit,
+  inject,
+  Injector,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
+import {
+  ControlValueAccessor,
+  NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+  NgControl,
+} from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { ErrorMessageComponent } from '../../error-message/error-message.component';
 
 @Component({
   selector: 'app-checkbox',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatCheckboxModule],
+  imports: [CommonModule, ReactiveFormsModule, MatCheckboxModule, ErrorMessageComponent],
   templateUrl: './checkbox.component.html',
   styleUrl: './checkbox.component.scss',
   providers: [
@@ -17,7 +32,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     },
   ],
 })
-export class CheckboxComponent implements ControlValueAccessor {
+export class CheckboxComponent implements ControlValueAccessor, OnInit {
   @Input() label = '';
   @Input() required = false;
   @Input() disabled = false;
@@ -27,12 +42,22 @@ export class CheckboxComponent implements ControlValueAccessor {
   @Output() valueChange = new EventEmitter<boolean>();
 
   value = false;
+  ngControl: NgControl | null = null;
+
+  private injector = inject(Injector);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
   private onChange: (value: boolean) => void = (_value: boolean) => {};
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   onTouched: () => void = () => {};
 
+  ngOnInit(): void {
+    try {
+      this.ngControl = this.injector.get(NgControl, null);
+    } catch {
+      this.ngControl = null;
+    }
+  }
   writeValue(value: boolean): void {
     this.value = value || false;
   }

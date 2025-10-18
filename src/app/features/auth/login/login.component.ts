@@ -10,7 +10,6 @@ import {
   AUTH_CONSTANTS,
   EMAIL_VALIDATION,
   PASSWORD_VALIDATION,
-  COMMON_VALIDATION,
   COMMON_UI,
 } from '@core/constants';
 
@@ -46,34 +45,6 @@ export class LoginComponent {
     ],
     rememberMe: [false],
   });
-
-  getErrorMessage(controlName: string): string {
-    const control = this.loginForm.get(controlName);
-
-    if (!control) {
-      return '';
-    }
-
-    if (control.hasError('required')) {
-      return COMMON_VALIDATION.MESSAGES.REQUIRED;
-    }
-
-    if (control.hasError('email')) {
-      return EMAIL_VALIDATION.MESSAGES.INVALID;
-    }
-
-    if (control.hasError('minlength')) {
-      const minLength = control.getError('minlength').requiredLength;
-      return COMMON_VALIDATION.MESSAGES.MIN_LENGTH(minLength);
-    }
-
-    if (control.hasError('maxlength')) {
-      const maxLength = control.getError('maxlength').requiredLength;
-      return COMMON_VALIDATION.MESSAGES.MAX_LENGTH(maxLength);
-    }
-
-    return '';
-  }
 
   async onSubmit(): Promise<void> {
     if (this.loginForm.valid) {
