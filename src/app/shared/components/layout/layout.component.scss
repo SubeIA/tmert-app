@@ -1,0 +1,81 @@
+:host {
+  display: block;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sidenav-container {
+  flex: 1;
+  margin-top: 64px;
+  height: calc(100vh - 64px);
+  background-color: #f5f5f5;
+  overflow: hidden;
+}
+
+.sidenav {
+  width: 280px;
+  background-color: #fafbfc;
+  border-right: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.04);
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(75, 105, 206, 0.2);
+    border-radius: 3px;
+
+    &:hover {
+      background: rgba(75, 105, 206, 0.3);
+    }
+  }
+}
+
+mat-sidenav-content {
+  background-color: #f5f5f5;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.page-container {
+  padding: 24px;
+  min-height: calc(100vh - 64px);
+  max-width: 1400px;
+  margin: 0 auto;
+
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidenav {
+    width: 260px;
+    box-shadow: 4px 0 16px rgba(0, 0, 0, 0.12);
+  }
+}
+
+@media (max-width: 480px) {
+  .sidenav {
+    width: 280px;
+    max-width: 85vw;
+  }
+}

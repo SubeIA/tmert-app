@@ -1,0 +1,22 @@
+<div class="layout-container">
+  <app-header (menuToggle)="toggleSidenav()"></app-header>
+
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav
+      #sidenav
+      [mode]="sidenavMode()"
+      [opened]="sidenavOpened()"
+      class="sidenav"
+      [fixedInViewport]="isMobile()"
+    >
+      <app-sidenav (itemClick)="closeSidenavIfMobile()"></app-sidenav>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+      <div class="page-container">
+        <app-breadcrumb></app-breadcrumb>
+        <router-outlet></router-outlet>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

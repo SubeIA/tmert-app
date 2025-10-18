@@ -1,0 +1,111 @@
+@use "@angular/material" as mat;
+
+$tmert-primary: (
+  50: #eef3ff,
+  100: #dbe6ff,
+  200: #c6d8ff,
+  300: #aebfff,
+  400: #8796f0,
+  500: #4b69ce,
+  // base
+  600: #425ac1,
+  700: #384fb0,
+  800: #2f418f,
+  900: #222f6b,
+  contrast: (
+    50: rgba(black, 0.87),
+    100: rgba(black, 0.87),
+    200: rgba(black, 0.87),
+    300: rgba(black, 0.87),
+    400: rgba(black, 0.87),
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+  ),
+);
+
+$tmert-accent: (
+  50: #fce4ec,
+  100: #f8bbd0,
+  200: #f48fb1,
+  300: #f06292,
+  400: #ec407a,
+  500: #e91e63,
+  600: #d81b60,
+  700: #c2185b,
+  800: #ad1457,
+  900: #880e4f,
+  contrast: (
+    50: rgba(black, 0.87),
+    100: rgba(black, 0.87),
+    200: rgba(black, 0.87),
+    300: rgba(black, 0.87),
+    400: white,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+  ),
+);
+
+$tmert-warn: (
+  50: #ffebee,
+  100: #ffcdd2,
+  200: #ef9a9a,
+  300: #e57373,
+  400: #ef5350,
+  500: #f44336,
+  600: #e53935,
+  700: #d32f2f,
+  800: #c62828,
+  900: #b71c1c,
+  contrast: (
+    50: rgba(black, 0.87),
+    100: rgba(black, 0.87),
+    200: rgba(black, 0.87),
+    300: rgba(black, 0.87),
+    400: white,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+  ),
+);
+
+$tmert-theme: mat.define-theme(
+  (
+    color: (
+      theme-type: light,
+      primary: mat.$blue-palette,
+      tertiary: mat.$violet-palette,
+    ),
+    typography: (
+      brand-family: "Roboto, sans-serif",
+      plain-family: "Roboto, sans-serif",
+    ),
+    density: (
+      scale: 0,
+    ),
+  )
+);
+
+$tmert-dark-theme: mat.define-theme(
+  (
+    color: (
+      theme-type: dark,
+      primary: mat.$blue-palette,
+      tertiary: mat.$violet-palette,
+    ),
+    typography: (
+      brand-family: "Roboto, sans-serif",
+      plain-family: "Roboto, sans-serif",
+    ),
+    density: (
+      scale: 0,
+    ),
+  )
+);

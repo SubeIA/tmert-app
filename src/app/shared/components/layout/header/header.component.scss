@@ -1,0 +1,59 @@
+.toolbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: linear-gradient(135deg, #4b69ce 0%, #3d5ab8 100%);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  height: 64px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+
+  .toolbar-title {
+    font-size: 20px;
+    font-weight: 500;
+    margin-left: 16px;
+    color: #ffffff;
+  }
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+
+  button {
+    margin-left: 8px;
+    color: #ffffff;
+
+    mat-icon {
+      color: #ffffff;
+    }
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+.user-menu-header {
+  padding: 16px;
+  background: linear-gradient(135deg, #4b69ce 0%, #3d5ab8 100%);
+  color: white;
+
+  .user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    strong {
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    small {
+      font-size: 12px;
+      opacity: 0.9;
+    }
+  }
+}
