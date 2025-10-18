@@ -7,6 +7,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatDividerModule } from '@angular/material/divider';
 import { AuthService } from '@core/services/auth.service';
+import { COMMON_UI } from '@core/constants/ui/common.constants';
 
 @Component({
   selector: 'app-header',
@@ -28,6 +29,7 @@ export class HeaderComponent {
 
   menuToggle = output<void>();
 
+  readonly UI = COMMON_UI;
   toggleMenu(): void {
     this.menuToggle.emit();
   }
