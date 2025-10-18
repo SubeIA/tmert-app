@@ -1,0 +1,107 @@
+<div class="login-container">
+  <div class="login-wrapper">
+    <div class="login-left">
+      <div class="branding">
+        <div class="logo-section">
+          <mat-icon class="brand-logo">{{ UI.ICONS.BRAND }}</mat-icon>
+          <h2>
+            {{ UI.BRANDING.NAME }}<span>{{ UI.BRANDING.SUFFIX }}</span>
+          </h2>
+        </div>
+        <div class="illustration">
+          <mat-icon class="illustration-icon">{{ UI.ICONS.ILLUSTRATION }}</mat-icon>
+        </div>
+      </div>
+    </div>
+
+    <div class="login-right">
+      <div class="form-container">
+        <div class="form-header">
+          <h1>{{ UI.HEADER.TITLE }}</h1>
+          <p>{{ UI.HEADER.SUBTITLE }}</p>
+        </div>
+
+        @if (true) {
+          <div class="dev-credentials">
+            <mat-icon>{{ UI.ICONS.INFO }}</mat-icon>
+            <div>
+              <strong>{{ UI.DEV_MODE.TITLE }}</strong>
+              <p>
+                {{ UI.DEV_MODE.EMAIL_LABEL }}: <code>{{ devCredentials.EMAIL }}</code> |
+                {{ UI.DEV_MODE.PASSWORD_LABEL }}: <code>{{ devCredentials.PASSWORD }}</code>
+              </p>
+            </div>
+          </div>
+        }
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+          @if (errorMessage()) {
+            <mat-error class="error-message">
+              {{ errorMessage() }}
+            </mat-error>
+          }
+
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ UI.FORM.LABELS.USERNAME }}</mat-label>
+            <input
+              matInput
+              type="email"
+              formControlName="email"
+              [placeholder]="UI.FORM.PLACEHOLDERS.USERNAME"
+              autocomplete="email"
+            />
+            @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
+              <mat-error>{{ getErrorMessage('email') }}</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>{{ UI.FORM.LABELS.PASSWORD }}</mat-label>
+            <input
+              matInput
+              [type]="hidePassword() ? 'password' : 'text'"
+              formControlName="password"
+              [placeholder]="UI.FORM.PLACEHOLDERS.PASSWORD"
+              autocomplete="current-password"
+            />
+            <button
+              mat-icon-button
+              matSuffix
+              type="button"
+              (click)="togglePasswordVisibility()"
+              [attr.aria-label]="UI.ICONS.VISIBILITY_OFF"
+            >
+              <mat-icon>{{
+                hidePassword() ? UI.ICONS.VISIBILITY_OFF : UI.ICONS.VISIBILITY_ON
+              }}</mat-icon>
+            </button>
+            @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
+              <mat-error>{{ getErrorMessage('password') }}</mat-error>
+            }
+          </mat-form-field>
+
+          <div class="form-options">
+            <a class="forgot-link" routerLink="/forgot-password">{{
+              UI.FORM.BUTTONS.FORGOT_PASSWORD
+            }}</a>
+          </div>
+
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            class="full-width submit-btn"
+            [disabled]="isLoading()"
+          >
+            @if (isLoading()) {
+              <mat-spinner diameter="20"></mat-spinner>
+              {{ UI.FORM.BUTTONS.SUBMIT_LOADING }}
+            } @else {
+              {{ UI.FORM.BUTTONS.SUBMIT }}
+            }
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,6 +1,6 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { AUTH_CONSTANTS } from '../constants';
+import { AUTH_CONSTANTS, LOGIN_CONSTANTS } from '../constants';
 
 export interface User {
   id: string;
@@ -46,10 +46,10 @@ export class AuthService {
     return new Promise(resolve => {
       setTimeout(() => {
         if (
-          credentials.email === AUTH_CONSTANTS.DEV_CREDENTIALS.EMAIL &&
-          credentials.password === AUTH_CONSTANTS.DEV_CREDENTIALS.PASSWORD
+          credentials.email === LOGIN_CONSTANTS.DEV_CREDENTIALS.EMAIL &&
+          credentials.password === LOGIN_CONSTANTS.DEV_CREDENTIALS.PASSWORD
         ) {
-          const user: User = { ...AUTH_CONSTANTS.DEV_CREDENTIALS.USER };
+          const user: User = { ...LOGIN_CONSTANTS.DEV_CREDENTIALS.USER };
 
           this.currentUser.set(user);
           this.isAuthenticated.set(true);
@@ -58,7 +58,7 @@ export class AuthService {
         } else {
           resolve(false);
         }
-      }, AUTH_CONSTANTS.TIMING.LOGIN_DELAY);
+      }, LOGIN_CONSTANTS.TIMING.LOGIN_DELAY);
     });
   }
 
