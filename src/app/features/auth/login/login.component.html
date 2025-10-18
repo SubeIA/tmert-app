@@ -41,44 +41,27 @@
             </mat-error>
           }
 
-          <mat-form-field class="full-width" appearance="outline">
-            <mat-label>{{ UI.FORM.LABELS.USERNAME }}</mat-label>
-            <input
-              matInput
-              type="email"
-              formControlName="email"
-              [placeholder]="UI.FORM.PLACEHOLDERS.USERNAME"
-              autocomplete="email"
-            />
-            @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
-              <mat-error>{{ getErrorMessage('email') }}</mat-error>
-            }
-          </mat-form-field>
+          <app-input
+            [label]="UI.FORM.LABELS.USERNAME"
+            [placeholder]="UI.FORM.PLACEHOLDERS.USERNAME"
+            type="email"
+            formControlName="email"
+            [errorMessage]="getErrorMessage('email')"
+            [required]="true"
+            prefixIcon="email"
+          >
+          </app-input>
 
-          <mat-form-field class="full-width" appearance="outline">
-            <mat-label>{{ UI.FORM.LABELS.PASSWORD }}</mat-label>
-            <input
-              matInput
-              [type]="hidePassword() ? 'password' : 'text'"
-              formControlName="password"
-              [placeholder]="UI.FORM.PLACEHOLDERS.PASSWORD"
-              autocomplete="current-password"
-            />
-            <button
-              mat-icon-button
-              matSuffix
-              type="button"
-              (click)="togglePasswordVisibility()"
-              [attr.aria-label]="UI.ICONS.VISIBILITY_OFF"
-            >
-              <mat-icon>{{
-                hidePassword() ? UI.ICONS.VISIBILITY_OFF : UI.ICONS.VISIBILITY_ON
-              }}</mat-icon>
-            </button>
-            @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
-              <mat-error>{{ getErrorMessage('password') }}</mat-error>
-            }
-          </mat-form-field>
+          <app-input
+            [label]="UI.FORM.LABELS.PASSWORD"
+            [placeholder]="UI.FORM.PLACEHOLDERS.PASSWORD"
+            type="password"
+            formControlName="password"
+            [errorMessage]="getErrorMessage('password')"
+            [required]="true"
+            prefixIcon="lock"
+          >
+          </app-input>
 
           <div class="form-options">
             <a class="forgot-link" routerLink="/forgot-password">{{

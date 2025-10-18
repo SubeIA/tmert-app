@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '@material/material.module';
 import { AuthService } from '@core/services/auth.service';
+import { InputComponent } from '@shared/components/form-controls';
 import {
   LOGIN_UI,
   LOGIN_CONSTANTS,
@@ -15,7 +16,7 @@ import {
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, MaterialModule],
+  imports: [ReactiveFormsModule, MaterialModule, InputComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
@@ -27,7 +28,6 @@ export class LoginComponent {
   readonly UI = LOGIN_UI;
   readonly devCredentials = LOGIN_CONSTANTS.DEV_CREDENTIALS;
 
-  hidePassword = signal(true);
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
 
@@ -46,10 +46,6 @@ export class LoginComponent {
     ],
     rememberMe: [false],
   });
-
-  togglePasswordVisibility(): void {
-    this.hidePassword.update(value => !value);
-  }
 
   getErrorMessage(controlName: string): string {
     const control = this.loginForm.get(controlName);

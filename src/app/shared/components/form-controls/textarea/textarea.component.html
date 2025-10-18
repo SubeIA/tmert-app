@@ -1,0 +1,21 @@
+<mat-form-field class="full-width" [appearance]="appearance">
+  <mat-label *ngIf="label">{{ label }}</mat-label>
+
+  <textarea
+    matInput
+    [placeholder]="placeholder"
+    [required]="required"
+    [readonly]="readonly"
+    [disabled]="disabled"
+    [rows]="rows"
+    [attr.maxlength]="maxLength"
+    [value]="value"
+    (input)="onInputChange($event)"
+    (blur)="onTouched()"
+  ></textarea>
+
+  <mat-hint *ngIf="hint" align="start">{{ hint }}</mat-hint>
+  <mat-hint *ngIf="maxLength" align="end">{{ value.length }} / {{ maxLength }}</mat-hint>
+
+  <mat-error *ngIf="errorMessage">{{ errorMessage }}</mat-error>
+</mat-form-field>

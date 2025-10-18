@@ -1,0 +1,42 @@
+<mat-form-field class="full-width" [appearance]="appearance">
+  <mat-label *ngIf="label">{{ label }}</mat-label>
+
+  <input
+    matInput
+    [type]="currentType"
+    [placeholder]="placeholder"
+    [required]="required"
+    [readonly]="readonly"
+    [disabled]="disabled"
+    [value]="value"
+    [attr.maxlength]="maxLength"
+    [min]="min"
+    [max]="max"
+    [step]="step"
+    (input)="onInputChange($event)"
+    (blur)="onTouched()"
+    (focus)="inputFocus.emit($event)"
+  />
+
+  <mat-icon *ngIf="prefixIcon" matPrefix>{{ prefixIcon }}</mat-icon>
+
+  <mat-icon *ngIf="suffixIcon && !showPasswordToggle" matSuffix>
+    {{ suffixIcon }}
+  </mat-icon>
+
+  <button
+    *ngIf="showPasswordToggle"
+    mat-icon-button
+    matSuffix
+    type="button"
+    (click)="togglePasswordVisibility()"
+    [attr.aria-label]="'Alternar visibilidad de contraseña'"
+  >
+    <mat-icon>{{ currentType === 'password' ? 'visibility_off' : 'visibility' }}</mat-icon>
+  </button>
+
+  <mat-hint *ngIf="hint" align="start">{{ hint }}</mat-hint>
+  <mat-hint *ngIf="maxLength" align="end">{{ value.length }} / {{ maxLength }}</mat-hint>
+
+  <mat-error *ngIf="errorMessage">{{ errorMessage }}</mat-error>
+</mat-form-field>
