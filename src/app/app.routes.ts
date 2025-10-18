@@ -1,10 +1,10 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './core/guards/auth.guard';
+import { authGuard } from '@core/guards/auth.guard';
 
 export const routes: Routes = [
   {
     path: 'auth',
-    loadChildren: () => import('./features/auth/auth.routes').then(m => m.AUTH_ROUTES),
+    loadChildren: () => import('@features/auth/auth.routes').then(m => m.AUTH_ROUTES),
   },
   {
     path: 'login',
@@ -15,7 +15,7 @@ export const routes: Routes = [
     path: '',
     canActivate: [authGuard],
     loadComponent: () =>
-      import('./shared/components/layout/layout.component').then(m => m.LayoutComponent),
+      import('@shared/components/layout/layout.component').then(m => m.LayoutComponent),
     children: [
       {
         path: '',
@@ -25,12 +25,12 @@ export const routes: Routes = [
       {
         path: 'home',
         data: { breadcrumb: 'Dashboard' },
-        loadComponent: () => import('./features/home/home.component').then(m => m.HomeComponent),
+        loadComponent: () => import('@features/home/home.component').then(m => m.HomeComponent),
       },
       {
         path: 'users',
         data: { breadcrumb: 'Users' },
-        loadComponent: () => import('./features/home/home.component').then(m => m.HomeComponent),
+        loadComponent: () => import('@features/home/home.component').then(m => m.HomeComponent),
       },
     ],
   },

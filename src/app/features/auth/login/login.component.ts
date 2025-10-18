@@ -1,8 +1,8 @@
 import { Component, signal, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { MaterialModule } from '../../../material/material.module';
-import { AuthService } from '../../../core/services/auth.service';
+import { MaterialModule } from '@material/material.module';
+import { AuthService } from '@core/services/auth.service';
 import {
   LOGIN_UI,
   LOGIN_CONSTANTS,
@@ -11,7 +11,7 @@ import {
   PASSWORD_VALIDATION,
   COMMON_VALIDATION,
   COMMON_UI,
-} from '../../../core/constants';
+} from '@core/constants';
 
 @Component({
   selector: 'app-login',

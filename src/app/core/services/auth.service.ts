@@ -1,6 +1,6 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { AUTH_CONSTANTS, LOGIN_CONSTANTS } from '../constants';
+import { AUTH_CONSTANTS, LOGIN_CONSTANTS } from '@core/constants';
 
 export interface User {
   id: string;

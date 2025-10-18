@@ -1,6 +1,6 @@
 import { Component, signal, inject, computed } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { MaterialModule } from '../../../material/material.module';
+import { MaterialModule } from '@material/material.module';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { HeaderComponent } from './header/header.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
