@@ -49,6 +49,7 @@ export interface FormFieldConfig {
 
 export interface FormStepConfig {
   label: string;
+  description?: string;
   icon?: string;
   fields: FormFieldConfig[];
   optional?: boolean;
@@ -56,6 +57,7 @@ export interface FormStepConfig {
 }
 
 export interface FormStepperConfig {
+  title?: string;
   steps: FormStepConfig[];
   linear?: boolean;
   orientation?: 'horizontal' | 'vertical';

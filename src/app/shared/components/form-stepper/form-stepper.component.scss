@@ -8,9 +8,27 @@
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
   border: 1px solid rgba(0, 0, 0, 0.06);
 
+  mat-card-header {
+    padding: 24px 24px 0;
+
+    mat-card-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin: 0;
+    }
+  }
+
   mat-card-content {
     padding: 24px;
   }
+}
+
+.step-description {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 16px 0;
+  line-height: 1.5;
 }
 
 .step-form {

@@ -1,4 +1,10 @@
 <mat-card class="stepper-card">
+  @if (config.title) {
+    <mat-card-header>
+      <mat-card-title>{{ config.title }}</mat-card-title>
+    </mat-card-header>
+  }
+
   <mat-card-content>
     <mat-stepper
       [linear]="config.linear !== false"
@@ -18,6 +24,10 @@
             }
             <span>{{ step.label }}</span>
           </ng-template>
+
+          @if (step.description) {
+            <p class="step-description">{{ step.description }}</p>
+          }
 
           <form [formGroup]="stepForms[stepIndex]" class="step-form">
             <div class="form-grid">

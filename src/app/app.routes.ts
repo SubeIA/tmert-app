@@ -32,6 +32,14 @@ export const routes: Routes = [
         data: { breadcrumb: 'Users' },
         loadComponent: () => import('@features/home/home.component').then(m => m.HomeComponent),
       },
+      {
+        path: 'tmert-evaluation',
+        data: { breadcrumb: 'Evaluación TMERT' },
+        loadChildren: () =>
+          import('@features/tmert-evaluation/tmert-evaluation.routes').then(
+            m => m.TMERT_EVALUATION_ROUTES
+          ),
+      },
     ],
   },
   {

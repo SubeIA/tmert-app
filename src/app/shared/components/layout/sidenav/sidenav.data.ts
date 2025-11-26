@@ -16,6 +16,11 @@ export const SIDEBAR_NAV_ITEMS: NavItem[] = [
     route: '/home',
   },
   {
+    label: 'Evaluación TMERT',
+    icon: 'assignment',
+    route: '/tmert-evaluation',
+  },
+  {
     label: 'Users',
     icon: 'people',
     route: '/users',
