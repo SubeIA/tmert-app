@@ -1,0 +1,103 @@
+<div class="chat-assistant" [class.open]="isOpen">
+  <button
+    mat-icon-button
+    class="toggle-button"
+    (click)="onTogglePanel()"
+    [matTooltip]="isOpen ? 'Cerrar asistente' : 'Abrir asistente'"
+    matTooltipPosition="left"
+  >
+    <mat-icon>{{ isOpen ? 'close' : 'smart_toy' }}</mat-icon>
+  </button>
+
+  <div class="chat-panel" *ngIf="isOpen">
+    <div class="chat-header">
+      <div class="header-content">
+        <mat-icon class="assistant-icon">smart_toy</mat-icon>
+        <h3>{{ title }}</h3>
+      </div>
+      <div class="header-actions">
+        <button
+          mat-icon-button
+          (click)="onClearChat()"
+          matTooltip="Limpiar chat"
+          [disabled]="messages().length === 0"
+        >
+          <mat-icon>delete_outline</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div class="messages-container" #messagesContainer>
+      @if (messages().length === 0) {
+        <div class="empty-state">
+          <mat-icon class="empty-icon">chat_bubble_outline</mat-icon>
+          <p>¡Hola! Soy tu asistente TMERT.</p>
+          <p class="empty-subtitle">¿En qué puedo ayudarte hoy?</p>
+        </div>
+      } @else {
+        @for (message of messages(); track message.id) {
+          <div
+            class="message"
+            [class.user]="message.role === 'user'"
+            [class.assistant]="message.role === 'assistant'"
+          >
+            <div class="message-avatar">
+              <mat-icon>{{ message.role === 'user' ? 'person' : 'smart_toy' }}</mat-icon>
+            </div>
+            <div class="message-content">
+              <div class="message-text">{{ message.content }}</div>
+              <div class="message-timestamp">
+                {{ message.timestamp | date: 'short' }}
+              </div>
+            </div>
+          </div>
+        }
+      }
+
+      @if (isLoading()) {
+        <div class="message assistant loading">
+          <div class="message-avatar">
+            <mat-icon>smart_toy</mat-icon>
+          </div>
+          <div class="message-content">
+            <div class="message-text">
+              <mat-spinner diameter="20"></mat-spinner>
+              <span class="loading-text">Pensando...</span>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div class="input-area">
+      <mat-form-field class="message-input" appearance="outline">
+        <textarea
+          matInput
+          [(ngModel)]="inputMessage"
+          [placeholder]="placeholder"
+          (keydown)="onKeyDown($event)"
+          [disabled]="isLoading()"
+          rows="1"
+          cdkTextareaAutosize
+          #autosize="cdkTextareaAutosize"
+          cdkAutosizeMinRows="1"
+          cdkAutosizeMaxRows="5"
+        ></textarea>
+      </mat-form-field>
+      <button
+        mat-icon-button
+        color="primary"
+        class="send-button"
+        (click)="onSendMessage()"
+        [disabled]="!inputMessage.trim() || isLoading()"
+        matTooltip="Enviar mensaje (Enter)"
+      >
+        <mat-icon>send</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>
