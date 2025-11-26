@@ -1,6 +1,6 @@
 <div class="chat-assistant" [class.open]="isOpen">
   <button
-    mat-icon-button
+    mat-fab
     class="toggle-button"
     (click)="onTogglePanel()"
     [matTooltip]="isOpen ? 'Cerrar asistente' : 'Abrir asistente'"
@@ -12,8 +12,16 @@
   <div class="chat-panel" *ngIf="isOpen">
     <div class="chat-header">
       <div class="header-content">
-        <mat-icon class="assistant-icon">smart_toy</mat-icon>
-        <h3>{{ title }}</h3>
+        <div class="assistant-icon">
+          <mat-icon>smart_toy</mat-icon>
+        </div>
+        <div class="header-text">
+          <h3>{{ title }}</h3>
+          <div class="status">
+            <span class="status-dot"></span>
+            <span>En línea</span>
+          </div>
+        </div>
       </div>
       <div class="header-actions">
         <button
@@ -27,14 +35,42 @@
       </div>
     </div>
 
-    <mat-divider></mat-divider>
-
     <div class="messages-container" #messagesContainer>
       @if (messages().length === 0) {
         <div class="empty-state">
-          <mat-icon class="empty-icon">chat_bubble_outline</mat-icon>
-          <p>¡Hola! Soy tu asistente TMERT.</p>
-          <p class="empty-subtitle">¿En qué puedo ayudarte hoy?</p>
+          <div class="empty-icon-wrapper">
+            <mat-icon class="empty-icon">smart_toy</mat-icon>
+          </div>
+          <div class="welcome-text">
+            <h4>¡Hola! Soy tu asistente TMERT</h4>
+            <p>
+              Estoy aquí para ayudarte con la evaluación de riesgos ergonómicos. ¿En qué puedo
+              ayudarte?
+            </p>
+          </div>
+          <div class="suggestions">
+            <button
+              class="suggestion-chip"
+              (click)="onSuggestionClick('¿Cómo inicio una evaluación TMERT?')"
+            >
+              <mat-icon>play_arrow</mat-icon>
+              <span>¿Cómo inicio una evaluación TMERT?</span>
+            </button>
+            <button
+              class="suggestion-chip"
+              (click)="onSuggestionClick('¿Qué factores de riesgo evalúa el TMERT?')"
+            >
+              <mat-icon>help_outline</mat-icon>
+              <span>¿Qué factores de riesgo evalúa?</span>
+            </button>
+            <button
+              class="suggestion-chip"
+              (click)="onSuggestionClick('Explícame los niveles de riesgo')"
+            >
+              <mat-icon>assessment</mat-icon>
+              <span>Explícame los niveles de riesgo</span>
+            </button>
+          </div>
         </div>
       } @else {
         @for (message of messages(); track message.id) {
@@ -49,7 +85,7 @@
             <div class="message-content">
               <div class="message-text">{{ message.content }}</div>
               <div class="message-timestamp">
-                {{ message.timestamp | date: 'short' }}
+                {{ message.timestamp | date: 'shortTime' }}
               </div>
             </div>
           </div>
@@ -63,15 +99,17 @@
           </div>
           <div class="message-content">
             <div class="message-text">
-              <mat-spinner diameter="20"></mat-spinner>
+              <div class="typing-indicator">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
               <span class="loading-text">Pensando...</span>
             </div>
           </div>
         </div>
       }
     </div>
-
-    <mat-divider></mat-divider>
 
     <div class="input-area">
       <mat-form-field class="message-input" appearance="outline">
@@ -85,12 +123,11 @@
           cdkTextareaAutosize
           #autosize="cdkTextareaAutosize"
           cdkAutosizeMinRows="1"
-          cdkAutosizeMaxRows="5"
+          cdkAutosizeMaxRows="4"
         ></textarea>
       </mat-form-field>
       <button
-        mat-icon-button
-        color="primary"
+        mat-fab
         class="send-button"
         (click)="onSendMessage()"
         [disabled]="!inputMessage.trim() || isLoading()"

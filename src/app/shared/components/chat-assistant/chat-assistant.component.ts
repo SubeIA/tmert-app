@@ -96,4 +96,9 @@ export class ChatAssistantComponent {
       this.onSendMessage();
     }
   }
+
+  onSuggestionClick(suggestion: string): void {
+    this.inputMessage = suggestion;
+    this.onSendMessage();
+  }
 }

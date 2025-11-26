@@ -1,3 +1,13 @@
+$primary-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+$secondary-gradient: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+$glass-bg: rgba(255, 255, 255, 0.95);
+$glass-border: rgba(255, 255, 255, 0.2);
+$shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+$shadow-md: 0 4px 20px rgba(0, 0, 0, 0.12);
+$shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.15);
+$border-radius: 16px;
+$transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
 .chat-assistant {
   position: fixed;
   right: 0;
@@ -6,40 +16,73 @@
   z-index: 1000;
   display: flex;
   align-items: flex-start;
+  pointer-events: none;
+
+  * {
+    pointer-events: auto;
+  }
 
   .toggle-button {
     position: absolute;
-    right: 0;
-    top: 20px;
-    background: white;
-    box-shadow: -2px 2px 8px rgba(0, 0, 0, 0.15);
-    border-radius: 8px 0 0 8px;
-    transition: all 0.3s ease;
+    right: 16px;
+    top: 24px;
+    width: 56px;
+    height: 56px;
+    background: $primary-gradient;
+    box-shadow:
+      $shadow-lg,
+      0 0 20px rgba(139, 92, 246, 0.3);
+    border-radius: 50%;
+    transition: $transition-smooth;
     z-index: 1001;
+    border: 2px solid rgba(255, 255, 255, 0.3);
 
     &:hover {
-      box-shadow: -4px 4px 12px rgba(0, 0, 0, 0.2);
+      transform: scale(1.1) rotate(5deg);
+      box-shadow:
+        $shadow-lg,
+        0 0 30px rgba(139, 92, 246, 0.5);
     }
 
     mat-icon {
-      transition: transform 0.3s ease;
+      color: white;
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+      transition: transform 0.4s ease;
+    }
+
+    &:hover mat-icon {
+      transform: scale(1.1);
     }
   }
 
   &.open .toggle-button {
-    right: 400px;
+    right: 420px;
+    background: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
+    box-shadow:
+      $shadow-lg,
+      0 0 20px rgba(239, 68, 68, 0.3);
+
+    &:hover {
+      box-shadow:
+        $shadow-lg,
+        0 0 30px rgba(239, 68, 68, 0.5);
+    }
   }
 
   .chat-panel {
     width: 400px;
     height: calc(100vh - 64px);
-    background: white;
-    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+    background: $glass-bg;
+    backdrop-filter: blur(20px);
+    box-shadow: $shadow-lg;
     display: flex;
     flex-direction: column;
     transform: translateX(100%);
-    transition: transform 0.3s ease;
-    border-left: 1px solid #e0e0e0;
+    transition: $transition-smooth;
+    border-left: 1px solid rgba(99, 102, 241, 0.1);
+    overflow: hidden;
   }
 
   &.open .chat-panel {
@@ -47,37 +90,107 @@
   }
 
   .chat-header {
-    padding: 16px;
+    padding: 20px 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: $primary-gradient;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: -30%;
+      left: -10%;
+      width: 150px;
+      height: 150px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+      border-radius: 50%;
+    }
 
     .header-content {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
+      z-index: 1;
 
       .assistant-icon {
-        font-size: 28px;
-        width: 28px;
-        height: 28px;
+        width: 44px;
+        height: 44px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        color: white;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
       }
 
-      h3 {
-        margin: 0;
-        font-size: 18px;
-        font-weight: 500;
+      .header-text {
+        display: flex;
+        flex-direction: column;
+
+        h3 {
+          margin: 0;
+          font-size: 18px;
+          font-weight: 600;
+          color: white;
+          letter-spacing: 0.3px;
+        }
+
+        .status {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          margin-top: 2px;
+
+          .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #4ade80;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+          }
+
+          span {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+          }
+        }
       }
     }
 
     .header-actions {
+      z-index: 1;
+      display: flex;
+      gap: 4px;
+
       button {
-        color: white;
+        color: rgba(255, 255, 255, 0.9);
+        transition: $transition-smooth;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.15);
+          color: white;
+        }
 
         &:disabled {
-          color: rgba(255, 255, 255, 0.5);
+          color: rgba(255, 255, 255, 0.4);
         }
       }
     }
@@ -86,11 +199,11 @@
   .messages-container {
     flex: 1;
     overflow-y: auto;
-    padding: 16px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    background: #f5f5f5;
+    gap: 20px;
+    background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
 
     &::-webkit-scrollbar {
       width: 6px;
@@ -101,57 +214,112 @@
     }
 
     &::-webkit-scrollbar-thumb {
-      background: #ccc;
-      border-radius: 3px;
+      background: linear-gradient(180deg, #cbd5e1 0%, #94a3b8 100%);
+      border-radius: 10px;
 
       &:hover {
-        background: #999;
+        background: linear-gradient(180deg, #94a3b8 0%, #64748b 100%);
       }
     }
 
+    // Empty State
     .empty-state {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       height: 100%;
-      color: #666;
       text-align: center;
-      padding: 32px;
+      padding: 40px;
 
-      .empty-icon {
-        font-size: 64px;
-        width: 64px;
-        height: 64px;
-        color: #999;
-        margin-bottom: 16px;
+      .empty-icon-wrapper {
+        width: 100px;
+        height: 100px;
+        background: $primary-gradient;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 24px;
+        box-shadow: 0 10px 40px rgba(139, 92, 246, 0.3);
+        animation: float 3s ease-in-out infinite;
+
+        .empty-icon {
+          font-size: 48px;
+          width: 48px;
+          height: 48px;
+          color: white;
+        }
       }
 
-      p {
-        margin: 8px 0;
-        font-size: 16px;
+      .welcome-text {
+        h4 {
+          margin: 0 0 8px;
+          font-size: 20px;
+          font-weight: 600;
+          color: #1e293b;
+        }
+
+        p {
+          margin: 0;
+          font-size: 14px;
+          color: #64748b;
+          line-height: 1.6;
+        }
       }
 
-      .empty-subtitle {
-        font-size: 14px;
-        color: #999;
+      .suggestions {
+        margin-top: 28px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+
+        .suggestion-chip {
+          padding: 12px 16px;
+          background: white;
+          border: 1px solid #e2e8f0;
+          border-radius: 12px;
+          font-size: 13px;
+          color: #475569;
+          cursor: pointer;
+          transition: $transition-smooth;
+          text-align: left;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+
+          mat-icon {
+            font-size: 18px;
+            width: 18px;
+            height: 18px;
+            color: #8b5cf6;
+          }
+
+          &:hover {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-color: #8b5cf6;
+            transform: translateX(4px);
+            box-shadow: $shadow-sm;
+          }
+        }
       }
     }
 
     .message {
       display: flex;
       gap: 12px;
-      animation: fadeIn 0.3s ease;
+      animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
       .message-avatar {
         flex-shrink: 0;
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #e0e0e0;
+        box-shadow: $shadow-sm;
 
         mat-icon {
           font-size: 20px;
@@ -164,21 +332,25 @@
         flex: 1;
         display: flex;
         flex-direction: column;
-        gap: 4px;
+        gap: 6px;
+        max-width: calc(100% - 50px);
 
         .message-text {
-          background: white;
-          padding: 12px 16px;
-          border-radius: 12px;
-          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+          padding: 14px 18px;
+          border-radius: $border-radius;
           word-wrap: break-word;
-          line-height: 1.5;
+          line-height: 1.6;
+          font-size: 14px;
+          position: relative;
         }
 
         .message-timestamp {
           font-size: 11px;
-          color: #999;
+          color: #94a3b8;
           padding: 0 4px;
+          display: flex;
+          align-items: center;
+          gap: 4px;
         }
       }
 
@@ -186,7 +358,7 @@
         flex-direction: row-reverse;
 
         .message-avatar {
-          background: #667eea;
+          background: $secondary-gradient;
           color: white;
         }
 
@@ -194,23 +366,27 @@
           align-items: flex-end;
 
           .message-text {
-            background: #667eea;
+            background: $secondary-gradient;
             color: white;
             border-bottom-right-radius: 4px;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.25);
           }
         }
       }
 
       &.assistant {
         .message-avatar {
-          background: #764ba2;
+          background: $primary-gradient;
           color: white;
         }
 
         .message-content {
           .message-text {
             background: white;
+            color: #1e293b;
             border-bottom-left-radius: 4px;
+            box-shadow: $shadow-sm;
+            border: 1px solid #e2e8f0;
           }
         }
       }
@@ -219,12 +395,32 @@
         .message-text {
           display: flex;
           align-items: center;
-          gap: 12px;
-          padding: 16px;
+          gap: 14px;
+          padding: 18px 20px;
+
+          .typing-indicator {
+            display: flex;
+            gap: 4px;
+
+            span {
+              width: 8px;
+              height: 8px;
+              background: #8b5cf6;
+              border-radius: 50%;
+              animation: bounce 1.4s infinite ease-in-out;
+
+              &:nth-child(1) {
+                animation-delay: -0.32s;
+              }
+              &:nth-child(2) {
+                animation-delay: -0.16s;
+              }
+            }
+          }
 
           .loading-text {
-            color: #666;
-            font-style: italic;
+            color: #64748b;
+            font-size: 13px;
           }
         }
       }
@@ -232,12 +428,13 @@
   }
 
   .input-area {
-    padding: 16px;
+    padding: 16px 20px 20px;
     background: white;
     display: flex;
     align-items: flex-end;
-    gap: 8px;
-    border-top: 1px solid #e0e0e0;
+    gap: 12px;
+    border-top: 1px solid #e2e8f0;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
 
     .message-input {
       flex: 1;
@@ -249,11 +446,30 @@
         }
 
         .mat-mdc-text-field-wrapper {
+          background: #f8fafc;
+          border-radius: 14px;
+          padding: 0 16px;
+          border: 2px solid transparent;
+          transition: $transition-smooth;
+
+          &:hover,
+          &:focus-within {
+            background: white;
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
+          }
+        }
+
+        .mat-mdc-form-field-flex {
           padding: 0;
         }
 
+        .mdc-notched-outline {
+          display: none;
+        }
+
         .mat-mdc-form-field-infix {
-          padding: 12px 0;
+          padding: 14px 0;
           min-height: auto;
         }
 
@@ -261,31 +477,76 @@
           resize: none;
           font-size: 14px;
           line-height: 1.5;
+          color: #1e293b;
+
+          &::placeholder {
+            color: #94a3b8;
+          }
         }
       }
     }
 
     .send-button {
-      margin-bottom: 4px;
+      width: 48px;
+      height: 48px;
+      background: $primary-gradient;
+      border-radius: 14px;
       flex-shrink: 0;
+      transition: $transition-smooth;
+      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
 
-      &:not(:disabled) {
+      mat-icon {
+        color: white;
+        transition: transform 0.3s ease;
+      }
+
+      &:hover:not(:disabled) {
+        transform: scale(1.05);
+        box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+
         mat-icon {
-          transition: transform 0.2s ease;
-        }
-
-        &:hover mat-icon {
           transform: translateX(2px);
+        }
+      }
+
+      &:disabled {
+        background: #e2e8f0;
+        box-shadow: none;
+
+        mat-icon {
+          color: #94a3b8;
         }
       }
     }
   }
 }
 
-@keyframes fadeIn {
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(0.9);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes slideIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(15px);
   }
   to {
     opacity: 1;
@@ -293,15 +554,40 @@
   }
 }
 
+@keyframes bounce {
+  0%,
+  80%,
+  100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
 @media (max-width: 768px) {
   .chat-assistant {
+    .toggle-button {
+      width: 50px;
+      height: 50px;
+      right: 12px;
+      top: 16px;
+
+      mat-icon {
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
+      }
+    }
+
     .chat-panel {
-      width: 100%;
-      max-width: 400px;
+      width: 100vw;
+      max-width: 100vw;
     }
 
     &.open .toggle-button {
-      right: calc(100vw - 48px);
+      right: auto;
+      left: 12px;
     }
   }
 }
