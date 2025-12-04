@@ -9,21 +9,22 @@
   flex-direction: column;
   height: 100vh;
   overflow: hidden;
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
 }
 
 .sidenav-container {
   flex: 1;
   margin-top: 64px;
   height: calc(100vh - 64px);
-  background-color: #f5f5f5;
+  background: transparent;
   overflow: hidden;
 }
 
 .sidenav {
   width: 280px;
-  background-color: #fafbfc;
-  border-right: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.04);
+  background: linear-gradient(180deg, #ffffff 0%, #fafbfc 100%);
+  border-right: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.03);
   overflow-x: hidden;
   overflow-y: auto;
 
@@ -36,33 +37,35 @@
   }
 
   &::-webkit-scrollbar-thumb {
-    background: rgba(75, 105, 206, 0.2);
+    background: rgba(99, 102, 241, 0.2);
     border-radius: 3px;
 
     &:hover {
-      background: rgba(75, 105, 206, 0.3);
+      background: rgba(99, 102, 241, 0.35);
     }
   }
 }
 
 mat-sidenav-content {
-  background-color: #f5f5f5;
+  background: transparent;
   overflow-x: hidden;
   overflow-y: auto;
 }
 
 .page-container {
-  padding: 24px;
+  padding: 28px 40px;
   min-height: calc(100vh - 64px);
-  max-width: 1400px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
 
   @media (max-width: 768px) {
-    padding: 16px;
+    padding: 20px;
   }
 
   @media (max-width: 480px) {
-    padding: 12px;
+    padding: 16px;
   }
 }
 

@@ -12,6 +12,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import {
   InputComponent,
   TextareaComponent,
@@ -19,7 +20,12 @@ import {
   CheckboxComponent,
   DatepickerComponent,
 } from '@shared/components/form-controls';
-import { FormFieldConfig, FormStepperConfig } from '@shared/models/form-field.model';
+import {
+  FormFieldConfig,
+  FormFieldGroup,
+  FormStepConfig,
+  FormStepperConfig,
+} from '@shared/models/form-field.model';
 import { COMMON_UI } from '@core/constants';
 
 @Component({
@@ -33,6 +39,7 @@ import { COMMON_UI } from '@core/constants';
     MatIconModule,
     MatCardModule,
     MatProgressSpinnerModule,
+    MatTooltipModule,
     InputComponent,
     TextareaComponent,
     SelectComponent,
@@ -63,7 +70,42 @@ export class FormStepperComponent implements OnInit {
       throw new Error('FormStepperComponent requires a valid config with steps');
     }
 
-    this.stepForms = this.config.steps.map(step => this.createFormGroup(step.fields));
+    this.stepForms = this.config.steps.map(step => {
+      const allFields = this.getAllFieldsFromStep(step);
+      return this.createFormGroup(allFields);
+    });
+  }
+
+  private getAllFieldsFromStep(step: FormStepConfig): FormFieldConfig[] {
+    const fields: FormFieldConfig[] = [];
+
+    if (step.fields) {
+      fields.push(...step.fields);
+    }
+
+    if (step.groups) {
+      step.groups.forEach(group => {
+        fields.push(...group.fields);
+      });
+    }
+
+    return fields;
+  }
+
+  getStepGroups(step: FormStepConfig): FormFieldGroup[] {
+    return step.groups || [];
+  }
+
+  getStepFields(step: FormStepConfig): FormFieldConfig[] {
+    return step.fields || [];
+  }
+
+  hasGroups(step: FormStepConfig): boolean {
+    return !!step.groups && step.groups.length > 0;
+  }
+
+  hasUngroupedFields(step: FormStepConfig): boolean {
+    return !!step.fields && step.fields.length > 0;
   }
 
   private createFormGroup(fields: FormFieldConfig[]): FormGroup {

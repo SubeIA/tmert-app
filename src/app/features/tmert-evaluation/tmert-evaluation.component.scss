@@ -1,9 +1,9 @@
 .tmert-evaluation-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 24px;
+  width: 100%;
+  max-width: 100%;
+  padding: 0;
 
   @media (max-width: 768px) {
-    padding: 16px;
+    padding: 0;
   }
 }

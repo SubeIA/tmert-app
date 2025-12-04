@@ -19,6 +19,7 @@ export interface FormFieldConfig {
   type: FormFieldType;
   placeholder?: string;
   hint?: string;
+  tooltip?: string;
   required?: boolean;
   disabled?: boolean;
   readonly?: boolean;
@@ -43,15 +44,23 @@ export interface FormFieldConfig {
   minDate?: Date;
   maxDate?: Date;
 
-  cols?: number; // Grid columns (1-12)
+  cols?: number;
   class?: string;
+  group?: string;
+}
+
+export interface FormFieldGroup {
+  name: string;
+  label: string;
+  fields: FormFieldConfig[];
 }
 
 export interface FormStepConfig {
   label: string;
   description?: string;
   icon?: string;
-  fields: FormFieldConfig[];
+  fields?: FormFieldConfig[];
+  groups?: FormFieldGroup[];
   optional?: boolean;
   completed?: boolean;
 }

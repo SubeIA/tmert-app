@@ -20,7 +20,17 @@
 
   <mat-icon *ngIf="prefixIcon" matPrefix>{{ prefixIcon }}</mat-icon>
 
-  <mat-icon *ngIf="suffixIcon && !showPasswordToggle" matSuffix>
+  <mat-icon
+    *ngIf="infoTooltip && !suffixIcon && !showPasswordToggle"
+    matSuffix
+    [matTooltip]="infoTooltip"
+    matTooltipPosition="above"
+    class="info-icon"
+  >
+    info
+  </mat-icon>
+
+  <mat-icon *ngIf="suffixIcon && !showPasswordToggle && !infoTooltip" matSuffix>
     {{ suffixIcon }}
   </mat-icon>
 

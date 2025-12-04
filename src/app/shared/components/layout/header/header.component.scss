@@ -4,18 +4,21 @@
   left: 0;
   right: 0;
   z-index: 1000;
-  background: linear-gradient(135deg, #4b69ce 0%, #3d5ab8 100%);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.25);
   height: 64px;
   display: flex;
   align-items: center;
-  padding: 0 16px;
+  padding: 0 20px;
+  backdrop-filter: blur(10px);
 
   .toolbar-title {
-    font-size: 20px;
-    font-weight: 500;
+    font-size: 22px;
+    font-weight: 600;
     margin-left: 16px;
     color: #ffffff;
+    letter-spacing: -0.5px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   }
 
   .spacer {
@@ -25,35 +28,46 @@
   button {
     margin-left: 8px;
     color: #ffffff;
+    border-radius: 12px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     mat-icon {
       color: #ffffff;
+      transition: transform 0.3s ease;
     }
 
     &:hover {
-      background-color: rgba(255, 255, 255, 0.1);
+      background-color: rgba(255, 255, 255, 0.15);
+      transform: scale(1.05);
+
+      mat-icon {
+        transform: scale(1.1);
+      }
     }
   }
 }
 
 .user-menu-header {
-  padding: 16px;
-  background: linear-gradient(135deg, #4b69ce 0%, #3d5ab8 100%);
+  padding: 20px;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
   color: white;
+  border-radius: 12px 12px 0 0;
+  margin: -8px -8px 8px -8px;
 
   .user-info {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
 
     strong {
-      font-size: 16px;
-      font-weight: 500;
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
     }
 
     small {
-      font-size: 12px;
-      opacity: 0.9;
+      font-size: 13px;
+      opacity: 0.85;
     }
   }
 }

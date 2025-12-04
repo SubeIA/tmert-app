@@ -1,4 +1,4 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, effect } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '@material/material.module';
@@ -10,7 +10,6 @@ import {
   AUTH_CONSTANTS,
   EMAIL_VALIDATION,
   PASSWORD_VALIDATION,
-  COMMON_UI,
 } from '@core/constants';
 
 @Component({
@@ -27,7 +26,7 @@ export class LoginComponent {
   readonly UI = LOGIN_UI;
   readonly devCredentials = LOGIN_CONSTANTS.DEV_CREDENTIALS;
 
-  isLoading = signal(false);
+  isLoading = this.authService.loading;
   errorMessage = signal<string | null>(null);
 
   loginForm: FormGroup = this.fb.group({
@@ -46,27 +45,47 @@ export class LoginComponent {
     rememberMe: [false],
   });
 
+  constructor() {
+    // Escuchar errores de autenticación
+    effect(() => {
+      const error = this.authService.error();
+      if (error) {
+        this.errorMessage.set(error.message);
+      }
+    });
+
+    // Redirigir si ya está autenticado
+    effect(() => {
+      if (this.authService.authenticated() && !this.authService.loading()) {
+        this.router.navigate([AUTH_CONSTANTS.ROUTES.AFTER_LOGIN]);
+      }
+    });
+  }
+
   async onSubmit(): Promise<void> {
     if (this.loginForm.valid) {
-      this.isLoading.set(true);
       this.errorMessage.set(null);
+      this.authService.clearError();
 
-      try {
-        const { email, password } = this.loginForm.value;
-        const success = await this.authService.login({ email, password });
+      const { email, password } = this.loginForm.value;
+      const success = await this.authService.login({ email, password });
 
-        if (success) {
-          this.router.navigate([AUTH_CONSTANTS.ROUTES.AFTER_LOGIN]);
-        } else {
-          this.errorMessage.set(COMMON_UI.NOTIFICATIONS.ERROR.LOGIN);
-        }
-      } catch {
-        this.errorMessage.set(COMMON_UI.NOTIFICATIONS.ERROR.GENERIC);
-      } finally {
-        this.isLoading.set(false);
+      if (success) {
+        this.router.navigate([AUTH_CONSTANTS.ROUTES.AFTER_LOGIN]);
       }
     } else {
       this.loginForm.markAllAsTouched();
+    }
+  }
+
+  async onGoogleLogin(): Promise<void> {
+    this.errorMessage.set(null);
+    this.authService.clearError();
+
+    const success = await this.authService.loginWithGoogle();
+
+    if (success) {
+      this.router.navigate([AUTH_CONSTANTS.ROUTES.AFTER_LOGIN]);
     }
   }
 }

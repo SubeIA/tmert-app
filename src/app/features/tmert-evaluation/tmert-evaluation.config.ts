@@ -8,6 +8,7 @@ export const TMERT_EVALUATION_CONFIG: FormStepperConfig = {
       label: 'Unidades Empresa / Identificación',
       description:
         'Análisis básico (Caracterización + Identificación Inicial) - Entidad empleadora',
+      icon: 'business',
       fields: [
         {
           name: 'entidad_nombre',
@@ -16,6 +17,7 @@ export const TMERT_EVALUATION_CONFIG: FormStepperConfig = {
           placeholder: 'Ingrese el nombre de la empresa o institución',
           required: true,
           validators: [Validators.required],
+          cols: 8,
         },
         {
           name: 'entidad_rut',
@@ -25,6 +27,7 @@ export const TMERT_EVALUATION_CONFIG: FormStepperConfig = {
           hint: 'Formato: XX.XXX.XXX-X',
           required: true,
           validators: [Validators.required, Validators.pattern(/^\d{1,2}\.\d{3}\.\d{3}-[\dkK]$/)],
+          cols: 4,
         },
         {
           name: 'entidad_direccion',
@@ -33,6 +36,7 @@ export const TMERT_EVALUATION_CONFIG: FormStepperConfig = {
           placeholder: 'Ingrese la dirección',
           required: true,
           validators: [Validators.required],
+          cols: 8,
         },
         {
           name: 'entidad_comuna',
@@ -41,6 +45,7 @@ export const TMERT_EVALUATION_CONFIG: FormStepperConfig = {
           placeholder: 'Ingrese la comuna',
           required: true,
           validators: [Validators.required],
+          cols: 4,
         },
         {
           name: 'oal',
@@ -49,6 +54,7 @@ export const TMERT_EVALUATION_CONFIG: FormStepperConfig = {
           placeholder: 'Ingrese el organismo administrador',
           required: true,
           validators: [Validators.required],
+          cols: 6,
         },
         {
           name: 'actividad_rubro',
@@ -57,12 +63,14 @@ export const TMERT_EVALUATION_CONFIG: FormStepperConfig = {
           placeholder: 'Ingrese la actividad o rubro',
           required: true,
           validators: [Validators.required],
+          cols: 6,
         },
       ],
     },
     {
       label: 'Subunidad',
       description: 'Análisis básico (Caracterización + Identificación Inicial) - Centro de trabajo',
+      icon: 'location_city',
       fields: [
         {
           name: 'centro_nombre',
@@ -71,6 +79,7 @@ export const TMERT_EVALUATION_CONFIG: FormStepperConfig = {
           placeholder: 'Ingrese el nombre del centro de trabajo',
           required: true,
           validators: [Validators.required],
+          cols: 12,
         },
         {
           name: 'centro_direccion',
@@ -79,6 +88,7 @@ export const TMERT_EVALUATION_CONFIG: FormStepperConfig = {
           placeholder: 'Ingrese la dirección del centro',
           required: true,
           validators: [Validators.required],
+          cols: 8,
         },
         {
           name: 'centro_comuna',
@@ -87,6 +97,7 @@ export const TMERT_EVALUATION_CONFIG: FormStepperConfig = {
           placeholder: 'Ingrese la comuna del centro',
           required: true,
           validators: [Validators.required],
+          cols: 4,
         },
         {
           name: 'centro_n_total',
@@ -97,6 +108,7 @@ export const TMERT_EVALUATION_CONFIG: FormStepperConfig = {
           required: true,
           validators: [Validators.required, Validators.min(0)],
           min: 0,
+          cols: 4,
         },
         {
           name: 'centro_n_hombres',
@@ -107,6 +119,7 @@ export const TMERT_EVALUATION_CONFIG: FormStepperConfig = {
           required: true,
           validators: [Validators.required, Validators.min(0)],
           min: 0,
+          cols: 4,
         },
         {
           name: 'centro_n_mujeres',
@@ -117,6 +130,7 @@ export const TMERT_EVALUATION_CONFIG: FormStepperConfig = {
           required: true,
           validators: [Validators.required, Validators.min(0)],
           min: 0,
+          cols: 4,
         },
       ],
     },

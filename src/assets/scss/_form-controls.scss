@@ -1,15 +1,32 @@
 // =============================================================================
 // Form Controls - Estilos globales para componentes reutilizables
+// Diseño limpio y profesional
 // =============================================================================
 
-// Variables
-$error-color: #f44336;
-$hint-color: rgba(0, 0, 0, 0.6);
-$border-hover-color: rgba(0, 0, 0, 0.87);
+// Variables - Color palette
+$primary-color: #1e3a5f; // Azul oscuro para bordes
+$primary-light: #2d5a8b;
+$primary-dark: #152a45;
+$secondary-color: #3b82f6;
+$accent-gradient: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
+$error-color: #dc2626;
+$success-color: #16a34a;
+$warning-color: #ca8a04;
+$hint-color: #6b7280;
+$text-color: #1f2937;
+$label-color: $primary-color;
+$border-color: $primary-color;
+$border-hover-color: $primary-dark;
+$background-color: #ffffff;
+$background-focus: #e8f4fc; // Fondo azul claro al enfocar
 $transition-speed: 0.2s;
-$form-control-margin: 1rem;
-$error-font-size: 0.875rem;
-$hint-font-size: 0.875rem;
+$form-control-margin: 1.25rem;
+$error-font-size: 0.8125rem;
+$hint-font-size: 0.8125rem;
+$border-radius: 4px; // Bordes ligeramente redondeados
+$input-height: 52px;
+$font-size-input: 0.9375rem;
+$font-size-label: 0.875rem;
 
 // =============================================================================
 // Estilos Base para Form Fields
@@ -26,14 +43,86 @@ $hint-font-size: 0.875rem;
 
   mat-form-field {
     width: 100%;
+    font-size: $font-size-input;
+
+    &.mat-mdc-form-field {
+      --mdc-outlined-text-field-container-shape: #{$border-radius};
+      --mat-form-field-container-height: #{$input-height};
+      --mat-form-field-container-vertical-padding: 14px;
+    }
 
     &.mat-form-field-appearance-outline {
-      .mat-mdc-form-field-error-wrapper {
-        padding: 0;
+      .mat-mdc-form-field-subscript-wrapper {
+        padding: 0 4px;
       }
 
+      // Wrapper principal
       .mat-mdc-text-field-wrapper {
-        padding-bottom: 0;
+        padding: 0 16px;
+        border-radius: $border-radius;
+        background: $background-color;
+
+        &.mdc-text-field--outlined {
+          --mdc-outlined-text-field-outline-color: #{$border-color};
+          --mdc-outlined-text-field-hover-outline-color: #{$border-hover-color};
+          --mdc-outlined-text-field-focus-outline-color: #{$primary-color};
+          --mdc-outlined-text-field-outline-width: 1px;
+          --mdc-outlined-text-field-focus-outline-width: 2px;
+        }
+      }
+
+      // Input container
+      .mat-mdc-form-field-infix {
+        min-height: $input-height;
+        padding: 14px 0;
+      }
+
+      // Bordes del outline
+      .mdc-notched-outline {
+        .mdc-notched-outline__leading {
+          border-radius: $border-radius 0 0 $border-radius;
+          border-color: $border-color;
+          border-width: 1px;
+        }
+
+        .mdc-notched-outline__notch {
+          border-color: $border-color;
+          border-width: 1px 0;
+        }
+
+        .mdc-notched-outline__trailing {
+          border-radius: 0 $border-radius $border-radius 0;
+          border-color: $border-color;
+          border-width: 1px;
+        }
+      }
+
+      // Label flotante
+      .mat-mdc-floating-label {
+        font-size: $font-size-label;
+        color: $label-color;
+        font-weight: 500;
+
+        &.mdc-floating-label--float-above {
+          font-size: 0.75rem;
+          color: $label-color;
+          font-weight: 600;
+          background: white;
+          padding: 0 4px;
+        }
+      }
+
+      // Input text
+      input.mat-mdc-input-element,
+      textarea.mat-mdc-input-element {
+        font-size: $font-size-input;
+        color: $text-color;
+        font-weight: 400;
+
+        &::placeholder {
+          color: $hint-color;
+          font-weight: 400;
+        }
       }
     }
   }
@@ -47,21 +136,37 @@ $hint-font-size: 0.875rem;
   .mat-mdc-form-field-error {
     color: $error-color !important;
     font-size: $error-font-size;
-    margin-top: 0.25rem;
+    margin-top: 4px;
     font-weight: 500;
     display: flex;
     align-items: center;
-    gap: 0.25rem;
+    gap: 6px;
+    line-height: 1.4;
+
+    &::before {
+      content: "•";
+      font-size: 1.2em;
+      color: $error-color;
+    }
   }
 
   .mat-mdc-form-field-hint {
     color: $hint-color;
     font-size: $hint-font-size;
+    margin-top: 4px;
   }
 
+  // Estado de error
   &.mat-form-field-invalid {
-    .mat-mdc-notch-piece {
+    .mat-mdc-text-field-wrapper {
+      background: #fef2f2; // Fondo rojo muy claro
+    }
+
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
       border-color: $error-color !important;
+      border-width: 1px !important;
     }
 
     .mat-mdc-floating-label {
@@ -71,22 +176,58 @@ $hint-font-size: 0.875rem;
 }
 
 // =============================================================================
-// Estilos de Interacción (hover, focus, etc)
+// Estilos de Interacción (hover, focus)
 // =============================================================================
 
 @mixin form-field-interactions {
   .mat-mdc-text-field-wrapper {
-    transition: all $transition-speed ease-in-out;
+    transition:
+      background-color $transition-speed ease,
+      box-shadow $transition-speed ease;
+    background: $background-color;
+    border-radius: $border-radius;
+  }
 
-    &:hover:not(.mat-form-field-disabled) {
-      .mat-mdc-notch-piece {
-        border-color: $border-hover-color;
-      }
+  // Focus state - fondo azul claro
+  &.mat-focused {
+    .mat-mdc-text-field-wrapper {
+      background: $background-focus;
+    }
+
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: $primary-color !important;
+      border-width: 2px !important;
     }
   }
 
   .mat-mdc-form-field-focus-overlay {
     background-color: transparent;
+  }
+
+  // Íconos
+  .mat-mdc-form-field-icon-suffix {
+    padding-right: 4px;
+
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      color: $primary-color;
+      cursor: pointer;
+    }
+  }
+
+  .mat-mdc-form-field-icon-prefix {
+    padding-left: 4px;
+
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      color: $hint-color;
+    }
   }
 }
 
@@ -116,11 +257,33 @@ $hint-font-size: 0.875rem;
       @include form-field-interactions;
 
       .mat-mdc-select-arrow-wrapper {
-        transform: translateY(-8px);
+        transform: translateY(0);
+        height: 20px;
+        padding-right: 8px;
+      }
+
+      .mat-mdc-select-arrow {
+        color: $primary-color;
+        transition: all $transition-speed ease;
+      }
+
+      &.mat-focused .mat-mdc-select-arrow {
+        color: $primary-dark;
       }
 
       .mat-mdc-select-trigger {
-        transition: all $transition-speed ease-in-out;
+        height: auto;
+        padding: 0;
+      }
+
+      .mat-mdc-select-value {
+        font-size: $font-size-input;
+        color: $text-color;
+        font-weight: 400;
+      }
+
+      .mat-mdc-select-placeholder {
+        color: $hint-color;
       }
     }
   }
@@ -136,77 +299,131 @@ $hint-font-size: 0.875rem;
       @include form-field-interactions;
 
       .mat-datepicker-toggle {
-        button {
-          transition: all $transition-speed ease-in-out;
+        .mat-mdc-icon-button {
+          width: 36px;
+          height: 36px;
+          padding: 6px;
 
-          &:hover {
-            transform: scale(1.1);
+          mat-icon {
+            font-size: 20px;
+            width: 20px;
+            height: 20px;
+            color: $primary-color;
+            transition: color $transition-speed ease;
+          }
+
+          &:hover mat-icon {
+            color: $primary-dark;
           }
         }
+      }
+
+      &.mat-focused .mat-datepicker-toggle mat-icon {
+        color: $primary-dark;
       }
     }
   }
 }
 
-// Checkbox
+// Checkbox - Estilo pill
 @mixin checkbox-styles {
   display: block;
   margin-bottom: $form-control-margin;
 
   mat-checkbox {
-    font-size: 1rem;
+    font-size: $font-size-input;
 
     ::ng-deep {
       .mdc-form-field {
         align-items: center;
+        gap: 10px;
       }
 
-      .mdc-checkbox__background {
-        transition: all $transition-speed ease-in-out;
+      .mdc-checkbox {
+        width: 20px;
+        height: 20px;
+        padding: 0;
+        flex-shrink: 0;
+
+        .mdc-checkbox__background {
+          width: 20px;
+          height: 20px;
+          border-radius: 6px;
+          border-width: 1.5px;
+          border-color: $border-color;
+          transition: all $transition-speed ease;
+        }
+
+        .mdc-checkbox__checkmark {
+          width: 14px;
+          height: 14px;
+        }
       }
 
       &:hover .mdc-checkbox__background {
-        transform: scale(1.05);
+        border-color: $primary-color;
+      }
+
+      .mdc-checkbox--selected .mdc-checkbox__background {
+        background: $primary-color;
+        border-color: $primary-color;
       }
 
       .mdc-label {
-        color: rgba(0, 0, 0, 0.87);
+        color: $text-color;
         font-weight: 400;
+        font-size: $font-size-input;
+        line-height: 1.5;
+        cursor: pointer;
       }
     }
   }
 }
 
-// Textarea específico
+// Textarea específico - Compacto
 @mixin textarea-specific {
   textarea {
     resize: vertical;
-    min-height: 60px;
+    min-height: 80px;
+    max-height: 200px;
     line-height: 1.5;
     font-family: inherit;
-    transition: all $transition-speed ease-in-out;
+    font-size: $font-size-input;
+    transition: all $transition-speed ease;
+    padding: 8px 0;
 
     &:focus {
       outline: none;
     }
+
+    &::placeholder {
+      color: $hint-color;
+    }
   }
 }
 
 // =============================================================================
-// Clases y mixins de utilidad para mensajes de error
+// Mensajes de error y utilidades - Compacto
 // =============================================================================
 
 @mixin form-error-message {
-  background: #ffebee;
-  color: #c62828;
-  padding: 12px 16px;
+  background: linear-gradient(135deg, rgba($error-color, 0.08) 0%, rgba($error-color, 0.04) 100%);
+  color: darken($error-color, 10%);
+  padding: 10px 14px;
   border-radius: 8px;
-  margin-bottom: 20px;
-  font-size: 14px;
+  margin-bottom: 16px;
+  font-size: $font-size-input;
   font-weight: 500;
-  border-left: 4px solid $error-color;
-  display: block;
-  animation: slideDown 0.3s ease-out;
+  border-left: 3px solid $error-color;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: slideDown 0.25s ease-out;
+
+  &::before {
+    content: "⚠";
+    font-size: 1em;
+  }
 }
 
 .form-error-message {
@@ -216,7 +433,7 @@ $hint-font-size: 0.875rem;
 @keyframes slideDown {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-8px);
   }
   to {
     opacity: 1;
@@ -225,22 +442,31 @@ $hint-font-size: 0.875rem;
 }
 
 // =============================================================================
-// Estilos para estados disabled
+// Estados disabled - Elegante
 // =============================================================================
 
 @mixin disabled-state {
   &.mat-form-field-disabled {
-    opacity: 0.6;
+    opacity: 0.55;
     cursor: not-allowed;
+    pointer-events: none;
 
     .mat-mdc-text-field-wrapper {
-      background-color: #f5f5f5;
+      background-color: #f8fafc;
+
+      .mat-mdc-notch-piece {
+        border-style: dashed;
+      }
+    }
+
+    .mat-mdc-floating-label {
+      color: $hint-color;
     }
   }
 }
 
 // =============================================================================
-// Aplicar estilos globales a todos los form fields
+// Aplicar estilos globales
 // =============================================================================
 
 .app-input,
@@ -251,5 +477,49 @@ $hint-font-size: 0.875rem;
     mat-form-field {
       @include disabled-state;
     }
+  }
+}
+
+// =============================================================================
+// Utilidades adicionales para layouts compactos
+// =============================================================================
+
+@mixin form-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+
+  > * {
+    flex: 1;
+    min-width: 200px;
+  }
+}
+
+@mixin form-section {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid $border-color;
+
+  &:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+}
+
+@mixin form-section-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: $text-color;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: $primary-color;
   }
 }

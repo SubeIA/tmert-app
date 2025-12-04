@@ -1,75 +1,189 @@
-import { Injectable, signal, inject } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { AUTH_CONSTANTS, LOGIN_CONSTANTS } from '@core/constants';
+import { onAuthStateChanged } from '@angular/fire/auth';
+import { AUTH_CONSTANTS } from '@core/constants';
+import { environment } from '../../../environments/environment';
 
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  role?: string;
-}
+import { AuthStateService } from './auth/auth-state.service';
+import { DemoAuthProvider } from './auth/demo-auth.provider';
+import { FirebaseAuthProvider } from './auth/firebase-auth.provider';
+import { LoginCredentials } from './auth/auth.types';
 
-export interface LoginCredentials {
-  email: string;
-  password: string;
-}
+export type { User, LoginCredentials, AuthError } from './auth/auth.types';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private router = inject(Router);
-  private currentUser = signal<User | null>(null);
-  private isAuthenticated = signal<boolean>(false);
+  private state = inject(AuthStateService);
+  private demoAuth = inject(DemoAuthProvider);
+  private firebaseAuth: FirebaseAuthProvider | null = null;
 
-  readonly user = this.currentUser.asReadonly();
-  readonly authenticated = this.isAuthenticated.asReadonly();
+  readonly user = this.state.user;
+  readonly authenticated = this.state.authenticated;
+  readonly loading = this.state.loading;
+  readonly error = this.state.error;
 
-  constructor() {
-    this.checkStoredAuth();
+  private get isFirebaseConfigured(): boolean {
+    return (
+      environment.firebase?.apiKey !== 'TU_API_KEY' &&
+      environment.firebase?.apiKey !== undefined &&
+      environment.firebase?.apiKey !== ''
+    );
   }
 
-  private checkStoredAuth(): void {
-    const storedUser = localStorage.getItem(AUTH_CONSTANTS.STORAGE_KEYS.CURRENT_USER);
-    if (storedUser) {
-      try {
-        const user = JSON.parse(storedUser);
-        this.currentUser.set(user);
-        this.isAuthenticated.set(true);
-      } catch {
-        localStorage.removeItem(AUTH_CONSTANTS.STORAGE_KEYS.CURRENT_USER);
-      }
+  constructor() {
+    if (this.isFirebaseConfigured) {
+      this.firebaseAuth = inject(FirebaseAuthProvider);
+    }
+    this.initAuthListener();
+  }
+
+  private initAuthListener(): void {
+    const savedUser = this.state.getPersistedUser();
+    if (savedUser?.id === 'demo-user-001') {
+      this.demoAuth.setCurrentUser(savedUser);
+      this.state.setUser(savedUser, true);
+      return;
+    }
+
+    if (this.firebaseAuth) {
+      onAuthStateChanged(this.firebaseAuth.getAuth(), fbUser => {
+        if (fbUser) {
+          const user = this.firebaseAuth!.getCurrentUser();
+          this.state.setUser(user, false);
+        } else if (!this.state.isLocal()) {
+          this.state.clear();
+        }
+      });
     }
   }
 
   async login(credentials: LoginCredentials): Promise<boolean> {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        if (
-          credentials.email === LOGIN_CONSTANTS.DEV_CREDENTIALS.EMAIL &&
-          credentials.password === LOGIN_CONSTANTS.DEV_CREDENTIALS.PASSWORD
-        ) {
-          const user: User = { ...LOGIN_CONSTANTS.DEV_CREDENTIALS.USER };
+    this.state.setLoading(true);
+    this.state.clearError();
 
-          this.currentUser.set(user);
-          this.isAuthenticated.set(true);
-          localStorage.setItem(AUTH_CONSTANTS.STORAGE_KEYS.CURRENT_USER, JSON.stringify(user));
-          resolve(true);
-        } else {
-          resolve(false);
-        }
-      }, LOGIN_CONSTANTS.TIMING.LOGIN_DELAY);
-    });
+    if (this.demoAuth.isDemoEmail(credentials.email)) {
+      const result = await this.demoAuth.login(credentials);
+      this.state.setLoading(false);
+
+      if (result.success && result.user) {
+        this.state.setUser(result.user, true);
+        return true;
+      }
+      if (result.error) {
+        this.state.setError(result.error);
+      }
+      return false;
+    }
+
+    if (!this.firebaseAuth) {
+      this.state.setError({
+        code: 'auth/not-configured',
+        message: 'Firebase no está configurado. Usa las credenciales demo.',
+      });
+      this.state.setLoading(false);
+      return false;
+    }
+
+    const result = await this.firebaseAuth.login(credentials);
+    this.state.setLoading(false);
+
+    if (result.success && result.user) {
+      this.state.setUser(result.user, false);
+      return true;
+    }
+    if (result.error) {
+      this.state.setError(result.error);
+    }
+    return false;
   }
 
-  logout(): void {
-    this.currentUser.set(null);
-    this.isAuthenticated.set(false);
-    localStorage.removeItem(AUTH_CONSTANTS.STORAGE_KEYS.CURRENT_USER);
+  async loginWithGoogle(): Promise<boolean> {
+    if (!this.firebaseAuth) {
+      this.state.setError({
+        code: 'auth/not-configured',
+        message: 'Google login requiere Firebase configurado.',
+      });
+      return false;
+    }
+
+    this.state.setLoading(true);
+    this.state.clearError();
+
+    const result = await this.firebaseAuth.loginWithGoogle();
+    this.state.setLoading(false);
+
+    if (result.success && result.user) {
+      this.state.setUser(result.user, false);
+      return true;
+    }
+    if (result.error) {
+      this.state.setError(result.error);
+    }
+    return false;
+  }
+
+  async register(credentials: LoginCredentials): Promise<boolean> {
+    if (!this.firebaseAuth) {
+      this.state.setError({
+        code: 'auth/not-configured',
+        message: 'El registro requiere Firebase configurado.',
+      });
+      return false;
+    }
+
+    this.state.setLoading(true);
+    this.state.clearError();
+
+    const result = await this.firebaseAuth.register(credentials);
+    this.state.setLoading(false);
+
+    if (result.success && result.user) {
+      this.state.setUser(result.user, false);
+      return true;
+    }
+    if (result.error) {
+      this.state.setError(result.error);
+    }
+    return false;
+  }
+
+  async resetPassword(email: string): Promise<boolean> {
+    if (!this.firebaseAuth) {
+      this.state.setError({
+        code: 'auth/not-configured',
+        message: 'Recuperar contraseña requiere Firebase configurado.',
+      });
+      return false;
+    }
+
+    this.state.setLoading(true);
+    const success = await this.firebaseAuth.resetPassword(email);
+    this.state.setLoading(false);
+    return success;
+  }
+
+  async logout(): Promise<void> {
+    this.state.setLoading(true);
+
+    if (this.state.isLocal()) {
+      await this.demoAuth.logout();
+    } else if (this.firebaseAuth) {
+      await this.firebaseAuth.logout();
+    }
+
+    this.state.clear();
+    this.state.setLoading(false);
     this.router.navigate([AUTH_CONSTANTS.ROUTES.LOGIN]);
   }
 
+  clearError(): void {
+    this.state.clearError();
+  }
+
   isLoggedIn(): boolean {
-    return this.isAuthenticated();
+    return this.state.authenticated();
   }
 }

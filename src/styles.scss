@@ -3,12 +3,35 @@
 @use "./assets/scss/form-controls" as form;
 
 :root {
-  --tmert-primary: #4b69ce; /* base blue */
+  --tmert-primary: #6366f1;
+  --tmert-primary-dark: #4f46e5;
+  --tmert-primary-light: #818cf8;
   --tmert-primary-contrast: #ffffff;
+  --tmert-secondary: #ec4899;
+  --tmert-secondary-dark: #db2777;
+  --tmert-accent: #06b6d4;
+  --tmert-success: #10b981;
+  --tmert-warning: #f59e0b;
+  --tmert-error: #ef4444;
+  --tmert-surface: #f8fafc;
+  --tmert-surface-elevated: #ffffff;
+  --tmert-border: rgba(0, 0, 0, 0.06);
+  --tmert-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --tmert-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --tmert-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --tmert-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --tmert-gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+  --tmert-gradient-secondary: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
+  --tmert-gradient-accent: linear-gradient(135deg, #06b6d4 0%, #22d3ee 100%);
+  --tmert-radius-sm: 6px;
+  --tmert-radius-md: 10px;
+  --tmert-radius-lg: 16px;
+  --tmert-radius-xl: 24px;
 }
 
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap");
 
 html {
   @include mat.theme(theme.$tmert-theme);
@@ -20,11 +43,19 @@ html {
 
 body {
   color-scheme: light;
-  background-color: var(--mat-sys-surface);
-  color: var(--mat-sys-on-surface);
-  font-family: "Roboto", sans-serif;
+  background: var(--tmert-surface);
+  color: #1e293b;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
   margin: 0;
   height: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 html,
@@ -36,21 +67,142 @@ body {
   box-sizing: border-box;
 }
 
+// Modern scrollbar
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.2);
+  border-radius: 4px;
+
+  &:hover {
+    background: rgba(99, 102, 241, 0.3);
+  }
+}
+
+// Glass morphism effect
+.glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+// Modern card styles
+.modern-card {
+  background: var(--tmert-surface-elevated);
+  border-radius: var(--tmert-radius-lg);
+  box-shadow: var(--tmert-shadow-md);
+  border: 1px solid var(--tmert-border);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    box-shadow: var(--tmert-shadow-lg);
+    transform: translateY(-2px);
+  }
+}
+
+// Gradient text
+.gradient-text {
+  background: var(--tmert-gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+// Modern button styles
+.btn-primary {
+  background: var(--tmert-gradient-primary) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: var(--tmert-radius-md) !important;
+  font-weight: 500 !important;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4) !important;
+  transition: all 0.3s ease !important;
+
+  &:hover {
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5) !important;
+    transform: translateY(-2px) !important;
+  }
+}
+
+.btn-secondary {
+  background: var(--tmert-surface-elevated) !important;
+  color: #64748b !important;
+  border: 1px solid var(--tmert-border) !important;
+  border-radius: var(--tmert-radius-md) !important;
+  font-weight: 500 !important;
+  transition: all 0.3s ease !important;
+
+  &:hover {
+    background: #f1f5f9 !important;
+    border-color: rgba(99, 102, 241, 0.3) !important;
+    color: var(--tmert-primary) !important;
+  }
+}
+
+// Login styles
 .login-container {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f5f5f5;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
   padding: 20px;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    top: -200px;
+    right: -200px;
+    animation: float 8s ease-in-out infinite;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 50%;
+    bottom: -150px;
+    left: -150px;
+    animation: float 6s ease-in-out infinite reverse;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(5deg);
+  }
 }
 
 .login-card {
   max-width: 450px;
   width: 100%;
-  background: #4b69ce;
-  border-radius: 8px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: var(--tmert-radius-xl);
+  box-shadow: var(--tmert-shadow-xl);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  position: relative;
+  z-index: 1;
 }
 
 .login-header {
@@ -87,4 +239,45 @@ body {
 
 .mb-24 {
   margin-bottom: 24px;
+}
+
+// Animations
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+.animate-slide-in {
+  animation: slideInRight 0.4s ease forwards;
 }

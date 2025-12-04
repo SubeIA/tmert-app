@@ -19,6 +19,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ErrorMessageComponent } from '../../error-message/error-message.component';
 
 @Component({
@@ -31,6 +32,7 @@ import { ErrorMessageComponent } from '../../error-message/error-message.compone
     MatInputModule,
     MatIconModule,
     MatButtonModule,
+    MatTooltipModule,
     ErrorMessageComponent,
   ],
   templateUrl: './input.component.html',
@@ -54,6 +56,7 @@ export class InputComponent implements ControlValueAccessor, OnInit {
   @Input() prefixIcon = '';
   @Input() suffixIcon = '';
   @Input() hint = '';
+  @Input() infoTooltip = '';
   @Input() maxLength?: number;
   @Input() min?: number;
   @Input() max?: number;

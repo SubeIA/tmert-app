@@ -2,4 +2,13 @@
 
 :host {
   @include form.input-textarea-styles;
+
+  .info-icon {
+    color: form.$primary-color;
+    cursor: pointer;
+
+    &:hover {
+      color: form.$primary-dark;
+    }
+  }
 }
