@@ -27,12 +27,3 @@ export interface AuthProvider {
   logout(): Promise<void>;
   getCurrentUser(): User | null;
 }
-
-export interface OAuthProvider extends AuthProvider {
-  loginWithGoogle(): Promise<AuthResult>;
-}
-
-export interface RegistrableProvider extends AuthProvider {
-  register(credentials: LoginCredentials): Promise<AuthResult>;
-  resetPassword(email: string): Promise<boolean>;
-}

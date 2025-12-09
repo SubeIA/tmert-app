@@ -2,7 +2,7 @@ import { Component, signal, inject, effect } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '@material/material.module';
-import { AuthService } from '@core/services/auth.service';
+import { AuthService } from '@core/services/auth/auth.service';
 import { InputComponent } from '@shared/components/form-controls';
 import {
   LOGIN_UI,
@@ -67,8 +67,8 @@ export class LoginComponent {
       this.errorMessage.set(null);
       this.authService.clearError();
 
-      const { email, password } = this.loginForm.value;
-      await this.authService.login({ email, password });
+      const { email, password, rememberMe } = this.loginForm.value;
+      await this.authService.login({ email, password }, rememberMe);
     } else {
       this.loginForm.markAllAsTouched();
     }

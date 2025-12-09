@@ -2,14 +2,14 @@ import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { onAuthStateChanged } from '@angular/fire/auth';
 import { AUTH_CONSTANTS } from '@core/constants';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../../environments/environment';
 
-import { AuthStateService } from './auth/auth-state.service';
-import { DemoAuthProvider } from './auth/demo-auth.provider';
-import { FirebaseAuthProvider } from './auth/firebase-auth.provider';
-import { LoginCredentials } from './auth/auth.types';
+import { AuthStateService } from './auth-state.service';
+import { DemoAuthProvider } from './demo-auth.provider';
+import { FirebaseAuthProvider } from './firebase-auth.provider';
+import { LoginCredentials } from './auth.types';
 
-export type { User, LoginCredentials, AuthError } from './auth/auth.types';
+export type { User, LoginCredentials, AuthError } from './auth.types';
 
 @Injectable({
   providedIn: 'root',
@@ -44,7 +44,7 @@ export class AuthService {
     const savedUser = this.state.getPersistedUser();
     if (savedUser?.id === 'demo-user-001') {
       this.demoAuth.setCurrentUser(savedUser);
-      this.state.setUser(savedUser, true);
+      this.state.setUser(savedUser, true, true);
       return;
     }
 
@@ -52,7 +52,8 @@ export class AuthService {
       onAuthStateChanged(this.firebaseAuth.getAuth(), fbUser => {
         if (fbUser) {
           const user = this.firebaseAuth!.getCurrentUser();
-          this.state.setUser(user, false);
+          const wasRemembered = savedUser !== null;
+          this.state.setUser(user, false, wasRemembered);
         } else if (!this.state.isLocal()) {
           this.state.clear();
         }
@@ -60,7 +61,7 @@ export class AuthService {
     }
   }
 
-  async login(credentials: LoginCredentials): Promise<boolean> {
+  async login(credentials: LoginCredentials, remember = false): Promise<boolean> {
     this.state.setLoading(true);
     this.state.clearError();
 
@@ -69,7 +70,7 @@ export class AuthService {
       this.state.setLoading(false);
 
       if (result.success && result.user) {
-        this.state.setUser(result.user, true);
+        this.state.setUser(result.user, true, remember);
         return true;
       }
       if (result.error) {
@@ -91,78 +92,13 @@ export class AuthService {
     this.state.setLoading(false);
 
     if (result.success && result.user) {
-      this.state.setUser(result.user, false);
+      this.state.setUser(result.user, false, remember);
       return true;
     }
     if (result.error) {
       this.state.setError(result.error);
     }
     return false;
-  }
-
-  async loginWithGoogle(): Promise<boolean> {
-    if (!this.firebaseAuth) {
-      this.state.setError({
-        code: 'auth/not-configured',
-        message: 'Google login requiere Firebase configurado.',
-      });
-      return false;
-    }
-
-    this.state.setLoading(true);
-    this.state.clearError();
-
-    const result = await this.firebaseAuth.loginWithGoogle();
-    this.state.setLoading(false);
-
-    if (result.success && result.user) {
-      this.state.setUser(result.user, false);
-      return true;
-    }
-    if (result.error) {
-      this.state.setError(result.error);
-    }
-    return false;
-  }
-
-  async register(credentials: LoginCredentials): Promise<boolean> {
-    if (!this.firebaseAuth) {
-      this.state.setError({
-        code: 'auth/not-configured',
-        message: 'El registro requiere Firebase configurado.',
-      });
-      return false;
-    }
-
-    this.state.setLoading(true);
-    this.state.clearError();
-
-    const result = await this.firebaseAuth.register(credentials);
-    this.state.setLoading(false);
-
-    if (result.success && result.user) {
-      this.state.setUser(result.user, false);
-      return true;
-    }
-    if (result.error) {
-      this.state.setError(result.error);
-    }
-    return false;
-  }
-
-  async resetPassword(email: string): Promise<boolean> {
-    if (!this.firebaseAuth) {
-      this.state.setError({
-        code: 'auth/not-configured',
-        message: 'Recuperar contraseña requiere Firebase configurado.',
-      });
-      return false;
-    }
-
-    this.state.setLoading(true);
-    const success = await this.firebaseAuth.resetPassword(email);
-    this.state.setLoading(false);
-    return success;
   }
 
   async logout(): Promise<void> {
