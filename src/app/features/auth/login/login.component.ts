@@ -42,22 +42,22 @@ export class LoginComponent {
         Validators.maxLength(PASSWORD_VALIDATION.LENGTH.MAX),
       ],
     ],
-    rememberMe: [false],
   });
 
   constructor() {
-    // Escuchar errores de autenticación
     effect(() => {
       const error = this.authService.error();
-      if (error) {
-        this.errorMessage.set(error.message);
-      }
+      this.errorMessage.set(error?.message ?? null);
     });
 
-    // Redirigir si ya está autenticado
     effect(() => {
-      if (this.authService.authenticated() && !this.authService.loading()) {
-        this.router.navigate([AUTH_CONSTANTS.ROUTES.AFTER_LOGIN]);
+      const isAuthenticated = this.authService.authenticated();
+      const isLoading = this.authService.loading();
+
+      if (isAuthenticated && !isLoading) {
+        queueMicrotask(() => {
+          this.router.navigate([AUTH_CONSTANTS.ROUTES.AFTER_LOGIN]);
+        });
       }
     });
   }
@@ -68,24 +68,9 @@ export class LoginComponent {
       this.authService.clearError();
 
       const { email, password } = this.loginForm.value;
-      const success = await this.authService.login({ email, password });
-
-      if (success) {
-        this.router.navigate([AUTH_CONSTANTS.ROUTES.AFTER_LOGIN]);
-      }
+      await this.authService.login({ email, password });
     } else {
       this.loginForm.markAllAsTouched();
-    }
-  }
-
-  async onGoogleLogin(): Promise<void> {
-    this.errorMessage.set(null);
-    this.authService.clearError();
-
-    const success = await this.authService.loginWithGoogle();
-
-    if (success) {
-      this.router.navigate([AUTH_CONSTANTS.ROUTES.AFTER_LOGIN]);
     }
   }
 }
