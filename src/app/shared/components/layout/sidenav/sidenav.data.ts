@@ -16,24 +16,27 @@ export const SIDEBAR_NAV_ITEMS: NavItem[] = [
     route: '/home',
   },
   {
+    label: 'Empresas',
+    icon: 'business',
+    route: '/companies',
+    roles: ['admin'],
+  },
+  {
+    label: 'Usuarios',
+    icon: 'people',
+    route: '/users',
+    roles: ['admin'],
+  },
+  {
+    label: 'Mis Evaluaciones',
+    icon: 'assignment_turned_in',
+    route: '/evaluations',
+  },
+  {
     label: 'Evaluación TMERT',
     icon: 'assignment',
     route: '/tmert-evaluation',
-  },
-  {
-    label: 'Users',
-    icon: 'people',
-    route: '/users',
-  },
-  {
-    label: 'Settings',
-    icon: 'settings',
-    route: '/settings',
-  },
-  {
-    label: 'Analytics',
-    icon: 'analytics',
-    route: '/analytics',
+    roles: ['admin', 'evaluator'],
   },
 ] as const;
 

@@ -1,0 +1,223 @@
+<div class="evaluations-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Mis Evaluaciones TMERT</mat-card-title>
+      <button mat-raised-button color="primary" (click)="createNewEvaluation()">
+        <mat-icon>add</mat-icon>
+        Nueva Evaluación
+      </button>
+    </mat-card-header>
+
+    <mat-card-content>
+      <mat-tab-group animationDuration="300ms">
+        <!-- Tab: En Progreso -->
+        <mat-tab label="En Progreso">
+          <ng-template mat-tab-label>
+            <mat-icon>pending_actions</mat-icon>
+            En Progreso ({{ inProgressEvaluations().length }})
+          </ng-template>
+
+          <div class="tab-content">
+            <table mat-table [dataSource]="inProgressEvaluations()" class="evaluations-table">
+              <ng-container matColumnDef="company">
+                <th mat-header-cell *matHeaderCellDef>Empresa</th>
+                <td mat-cell *matCellDef="let evaluation">
+                  <div class="company-cell">
+                    <strong>{{ evaluation.companyName }}</strong>
+                    <small>Evaluador: {{ evaluation.evaluatorName }}</small>
+                  </div>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef>Estado</th>
+                <td mat-cell *matCellDef="let evaluation">
+                  <mat-chip [color]="getStatusColor(evaluation.status)">
+                    {{ getStatusLabel(evaluation.status) }}
+                  </mat-chip>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="progress">
+                <th mat-header-cell *matHeaderCellDef>Progreso</th>
+                <td mat-cell *matCellDef="let evaluation">
+                  <div class="progress-cell">
+                    <mat-progress-bar
+                      mode="determinate"
+                      [value]="evaluation.progress"
+                    ></mat-progress-bar>
+                    <span>{{ evaluation.progress }}%</span>
+                  </div>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="startDate">
+                <th mat-header-cell *matHeaderCellDef>Fecha Inicio</th>
+                <td mat-cell *matCellDef="let evaluation">
+                  {{ formatDate(evaluation.startDate) }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>Acciones</th>
+                <td mat-cell *matCellDef="let evaluation">
+                  <button
+                    mat-raised-button
+                    color="primary"
+                    (click)="continueEvaluation(evaluation)"
+                  >
+                    <mat-icon>edit</mat-icon>
+                    Continuar
+                  </button>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+              <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell empty-state" [attr.colspan]="displayedColumns.length">
+                  <mat-icon>task</mat-icon>
+                  <p>No tienes evaluaciones en progreso</p>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </mat-tab>
+
+        <!-- Tab: Borradores -->
+        <mat-tab label="Borradores">
+          <ng-template mat-tab-label>
+            <mat-icon>draft</mat-icon>
+            Borradores ({{ draftEvaluations().length }})
+          </ng-template>
+
+          <div class="tab-content">
+            <table mat-table [dataSource]="draftEvaluations()" class="evaluations-table">
+              <ng-container matColumnDef="company">
+                <th mat-header-cell *matHeaderCellDef>Empresa</th>
+                <td mat-cell *matCellDef="let evaluation">
+                  <div class="company-cell">
+                    <strong>{{ evaluation.companyName }}</strong>
+                  </div>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef>Estado</th>
+                <td mat-cell *matCellDef="let evaluation">
+                  <mat-chip [color]="getStatusColor(evaluation.status)">
+                    {{ getStatusLabel(evaluation.status) }}
+                  </mat-chip>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="progress">
+                <th mat-header-cell *matHeaderCellDef>Progreso</th>
+                <td mat-cell *matCellDef="let evaluation">
+                  <div class="progress-cell">
+                    <span>{{ evaluation.progress }}%</span>
+                  </div>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="startDate">
+                <th mat-header-cell *matHeaderCellDef>Fecha Creación</th>
+                <td mat-cell *matCellDef="let evaluation">
+                  {{ formatDate(evaluation.createdAt) }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>Acciones</th>
+                <td mat-cell *matCellDef="let evaluation">
+                  <button mat-raised-button color="accent" (click)="continueEvaluation(evaluation)">
+                    <mat-icon>play_arrow</mat-icon>
+                    Iniciar
+                  </button>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+              <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell empty-state" [attr.colspan]="displayedColumns.length">
+                  <mat-icon>note_add</mat-icon>
+                  <p>No tienes borradores guardados</p>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </mat-tab>
+
+        <!-- Tab: Completadas -->
+        <mat-tab label="Completadas">
+          <ng-template mat-tab-label>
+            <mat-icon>check_circle</mat-icon>
+            Completadas ({{ completedEvaluations().length }})
+          </ng-template>
+
+          <div class="tab-content">
+            <table mat-table [dataSource]="completedEvaluations()" class="evaluations-table">
+              <ng-container matColumnDef="company">
+                <th mat-header-cell *matHeaderCellDef>Empresa</th>
+                <td mat-cell *matCellDef="let evaluation">
+                  <div class="company-cell">
+                    <strong>{{ evaluation.companyName }}</strong>
+                  </div>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef>Estado</th>
+                <td mat-cell *matCellDef="let evaluation">
+                  <mat-chip color="primary">
+                    <mat-icon>check</mat-icon>
+                    {{ getStatusLabel(evaluation.status) }}
+                  </mat-chip>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="progress">
+                <th mat-header-cell *matHeaderCellDef>Progreso</th>
+                <td mat-cell *matCellDef="let evaluation">
+                  <div class="progress-cell">
+                    <span class="completed-badge">100%</span>
+                  </div>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="startDate">
+                <th mat-header-cell *matHeaderCellDef>Fecha Completada</th>
+                <td mat-cell *matCellDef="let evaluation">
+                  {{ formatDate(evaluation.completedDate) }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>Acciones</th>
+                <td mat-cell *matCellDef="let evaluation">
+                  <button mat-button (click)="viewEvaluation(evaluation)">
+                    <mat-icon>visibility</mat-icon>
+                    Ver
+                  </button>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+              <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell empty-state" [attr.colspan]="displayedColumns.length">
+                  <mat-icon>assignment_turned_in</mat-icon>
+                  <p>No tienes evaluaciones completadas</p>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card-content>
+  </mat-card>
+</div>

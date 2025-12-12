@@ -23,6 +23,7 @@ export class CompanyFirestoreService {
   private readonly COMPANIES_COLLECTION = 'companies';
 
   async createCompany(companyData: CreateCompanyDto): Promise<string> {
+    console.log(companyData);
     const companyRef = doc(collection(this.firestore, this.COMPANIES_COLLECTION));
 
     const data: Record<string, unknown> = {
@@ -74,6 +75,38 @@ export class CompanyFirestoreService {
       ...updates,
       updatedAt: serverTimestamp(),
     });
+  }
+
+  /**
+   * Get all companies in the system.
+   * @returns Promise with array of all companies
+   */
+  async getAllCompanies(): Promise<Company[]> {
+    try {
+      const companiesRef = collection(this.firestore, this.COMPANIES_COLLECTION);
+      const querySnapshot = await getDocs(companiesRef);
+
+      return querySnapshot.docs.map(docSnap => {
+        const data = docSnap.data();
+        return {
+          id: docSnap.id,
+          name: data['name'],
+          rut: data['rut'],
+          address: data['address'],
+          industry: data['industry'],
+          contactName: data['contactName'],
+          contactEmail: data['contactEmail'],
+          contactPhone: data['contactPhone'],
+          evaluatorIds: data['evaluatorIds'] || [],
+          evaluations: data['evaluations'] || [],
+          createdAt: data['createdAt']?.toDate(),
+          updatedAt: data['updatedAt']?.toDate(),
+        } as Company;
+      });
+    } catch (error) {
+      console.error('Error getting all companies:', error);
+      return [];
+    }
   }
 
   async getCompaniesByEvaluator(evaluatorId: string): Promise<Company[]> {

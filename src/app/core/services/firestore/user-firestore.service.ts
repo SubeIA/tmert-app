@@ -1,8 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import {
   Firestore,
+  collection,
   doc,
   getDoc,
+  getDocs,
   setDoc,
   updateDoc,
   deleteDoc,
@@ -72,6 +74,34 @@ export class UserFirestoreService {
       ...updates,
       updatedAt: serverTimestamp(),
     });
+  }
+
+  /**
+   * Get all users in the system.
+   * @returns Promise with array of all users
+   */
+  async getAllUsers(): Promise<User[]> {
+    try {
+      const usersRef = collection(this.firestore, this.USERS_COLLECTION);
+      const querySnapshot = await getDocs(usersRef);
+
+      return querySnapshot.docs.map(docSnap => {
+        const data = docSnap.data();
+        return {
+          id: docSnap.id,
+          email: data['email'],
+          name: data['name'],
+          photoURL: data['photoURL'],
+          role: data['role'] || 'evaluator',
+          companyIds: data['companyIds'] || [],
+          createdAt: data['createdAt']?.toDate(),
+          updatedAt: data['updatedAt']?.toDate(),
+        } as User;
+      });
+    } catch (error) {
+      console.error('Error getting all users:', error);
+      return [];
+    }
   }
 
   async addCompanyToUser(userId: string, companyId: string): Promise<void> {

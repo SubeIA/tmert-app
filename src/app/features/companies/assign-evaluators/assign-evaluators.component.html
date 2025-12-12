@@ -1,0 +1,78 @@
+<div class="assign-container">
+  <mat-card>
+    <mat-card-header>
+      <div class="header-content">
+        <button mat-icon-button (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <div class="header-info">
+          <mat-card-title>Asignar Evaluadores</mat-card-title>
+          <mat-card-subtitle *ngIf="company()">
+            {{ company()!.name }}
+          </mat-card-subtitle>
+        </div>
+      </div>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div *ngIf="loading()" class="loading-container">
+        <mat-spinner></mat-spinner>
+      </div>
+
+      <div *ngIf="!loading()" class="content">
+        <!-- Summary -->
+        <div class="summary">
+          <mat-chip-set>
+            <mat-chip>
+              <mat-icon>people</mat-icon>
+              {{ selection.selected.length }} evaluadores seleccionados
+            </mat-chip>
+          </mat-chip-set>
+        </div>
+
+        <!-- Evaluators List -->
+        <mat-list class="evaluators-list">
+          <h3 mat-subheader>Evaluadores Disponibles</h3>
+
+          <mat-list-item *ngFor="let evaluator of availableEvaluators()">
+            <mat-checkbox
+              [checked]="isSelected(evaluator.id)"
+              (change)="toggleEvaluator(evaluator.id)"
+              class="evaluator-checkbox"
+            >
+              <div class="evaluator-info">
+                <div class="evaluator-name">
+                  <strong>{{ evaluator.name }}</strong>
+                  <mat-chip class="role-chip">{{ evaluator.role }}</mat-chip>
+                </div>
+                <div class="evaluator-email">{{ evaluator.email }}</div>
+                <div
+                  class="evaluator-stats"
+                  *ngIf="evaluator.companyIds && evaluator.companyIds.length > 0"
+                >
+                  <mat-icon>business</mat-icon>
+                  <span>{{ evaluator.companyIds.length }} empresas asignadas</span>
+                </div>
+              </div>
+            </mat-checkbox>
+          </mat-list-item>
+
+          <!-- Empty state -->
+          <div class="empty-state" *ngIf="availableEvaluators().length === 0">
+            <mat-icon>person_off</mat-icon>
+            <p>No hay evaluadores disponibles</p>
+            <small>Primero debes registrar usuarios con rol de evaluador</small>
+          </div>
+        </mat-list>
+      </div>
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+      <button mat-button (click)="goBack()">Cancelar</button>
+      <button mat-raised-button color="primary" (click)="saveAssignments()" [disabled]="loading()">
+        <mat-icon>save</mat-icon>
+        Guardar Asignaciones
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

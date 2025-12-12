@@ -1,0 +1,170 @@
+.assign-container {
+  padding: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+
+  mat-card {
+    mat-card-header {
+      padding: 1rem;
+      background-color: #f5f5f5;
+      border-radius: 8px 8px 0 0;
+      margin-bottom: 1.5rem;
+
+      .header-content {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        width: 100%;
+
+        .header-info {
+          flex: 1;
+
+          mat-card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+          }
+
+          mat-card-subtitle {
+            margin-top: 0.25rem;
+            font-size: 1rem;
+          }
+        }
+      }
+    }
+
+    mat-card-content {
+      min-height: 400px;
+    }
+  }
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.summary {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+
+  mat-chip-set {
+    mat-chip {
+      mat-icon {
+        margin-right: 0.5rem;
+      }
+    }
+  }
+}
+
+.evaluators-list {
+  h3[mat-subheader] {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.87);
+  }
+
+  mat-list-item {
+    height: auto;
+    padding: 1rem;
+    border-bottom: 1px solid #e0e0e0;
+
+    &:hover {
+      background-color: #f5f5f5;
+    }
+
+    .evaluator-checkbox {
+      width: 100%;
+
+      .evaluator-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-left: 0.5rem;
+
+        .evaluator-name {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+
+          strong {
+            font-size: 1rem;
+          }
+
+          .role-chip {
+            font-size: 0.75rem;
+            min-height: 24px;
+            padding: 0 0.5rem;
+          }
+        }
+
+        .evaluator-email {
+          color: rgba(0, 0, 0, 0.6);
+          font-size: 0.9rem;
+        }
+
+        .evaluator-stats {
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
+          color: rgba(0, 0, 0, 0.54);
+          font-size: 0.85rem;
+
+          mat-icon {
+            font-size: 18px;
+            width: 18px;
+            height: 18px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  text-align: center;
+
+  mat-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    color: rgba(0, 0, 0, 0.3);
+    margin-bottom: 1rem;
+  }
+
+  p {
+    font-size: 1.1rem;
+    color: rgba(0, 0, 0, 0.6);
+    margin: 0 0 0.5rem 0;
+  }
+
+  small {
+    color: rgba(0, 0, 0, 0.4);
+  }
+}
+
+mat-card-actions {
+  padding: 1rem;
+  border-top: 1px solid #e0e0e0;
+
+  button {
+    mat-icon {
+      margin-right: 0.25rem;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .assign-container {
+    padding: 1rem;
+  }
+}

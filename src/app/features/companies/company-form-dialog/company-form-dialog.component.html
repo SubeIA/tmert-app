@@ -1,0 +1,81 @@
+<h2 mat-dialog-title>
+  <mat-icon>{{ isEditMode ? 'edit' : 'add_business' }}</mat-icon>
+  {{ isEditMode ? 'Editar Empresa' : 'Nueva Empresa' }}
+</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="companyForm" class="company-form">
+    <!-- Nombre -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Nombre de la empresa *</mat-label>
+      <input matInput formControlName="name" placeholder="Ej: Constructora ABC" />
+      <mat-icon matPrefix>business</mat-icon>
+      <mat-error *ngIf="companyForm.get('name')?.invalid">
+        {{ getErrorMessage('name') }}
+      </mat-error>
+    </mat-form-field>
+
+    <!-- RUT -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>RUT</mat-label>
+      <input matInput formControlName="rut" placeholder="Ej: 76.123.456-7" />
+      <mat-icon matPrefix>badge</mat-icon>
+    </mat-form-field>
+
+    <!-- Dirección -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Dirección</mat-label>
+      <input matInput formControlName="address" placeholder="Ej: Av. Libertador 123, Santiago" />
+      <mat-icon matPrefix>location_on</mat-icon>
+    </mat-form-field>
+
+    <!-- Industria -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Industria</mat-label>
+      <input matInput formControlName="industry" placeholder="Ej: Construcción, Minería, etc." />
+      <mat-icon matPrefix>category</mat-icon>
+    </mat-form-field>
+
+    <div class="section-title">
+      <mat-icon>contact_phone</mat-icon>
+      <h3>Información de Contacto</h3>
+    </div>
+
+    <!-- Nombre del contacto -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Nombre del contacto</mat-label>
+      <input matInput formControlName="contactName" placeholder="Ej: Juan Pérez" />
+      <mat-icon matPrefix>person</mat-icon>
+    </mat-form-field>
+
+    <!-- Email del contacto -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Email del contacto</mat-label>
+      <input
+        matInput
+        type="email"
+        formControlName="contactEmail"
+        placeholder="contacto@empresa.cl"
+      />
+      <mat-icon matPrefix>email</mat-icon>
+      <mat-error *ngIf="companyForm.get('contactEmail')?.invalid">
+        {{ getErrorMessage('contactEmail') }}
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Teléfono del contacto -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Teléfono del contacto</mat-label>
+      <input matInput formControlName="contactPhone" placeholder="+56912345678" />
+      <mat-icon matPrefix>phone</mat-icon>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="companyForm.invalid">
+    <mat-icon>{{ isEditMode ? 'save' : 'add' }}</mat-icon>
+    {{ isEditMode ? 'Guardar' : 'Crear' }}
+  </button>
+</mat-dialog-actions>
