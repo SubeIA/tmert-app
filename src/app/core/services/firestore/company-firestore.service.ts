@@ -77,10 +77,6 @@ export class CompanyFirestoreService {
     });
   }
 
-  /**
-   * Get all companies in the system.
-   * @returns Promise with array of all companies
-   */
   async getAllCompanies(): Promise<Company[]> {
     try {
       const companiesRef = collection(this.firestore, this.COMPANIES_COLLECTION);

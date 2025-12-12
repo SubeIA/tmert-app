@@ -76,10 +76,6 @@ export class UserFirestoreService {
     });
   }
 
-  /**
-   * Get all users in the system.
-   * @returns Promise with array of all users
-   */
   async getAllUsers(): Promise<User[]> {
     try {
       const usersRef = collection(this.firestore, this.USERS_COLLECTION);
