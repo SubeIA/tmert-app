@@ -11,58 +11,16 @@
       </button>
     </div>
 
-    <table mat-table [dataSource]="users()" class="users-table">
-      <!-- Name Column -->
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>Nombre</th>
-        <td mat-cell *matCellDef="let user">{{ user.name }}</td>
-      </ng-container>
-
-      <!-- Email Column -->
-      <ng-container matColumnDef="email">
-        <th mat-header-cell *matHeaderCellDef>Email</th>
-        <td mat-cell *matCellDef="let user">{{ user.email }}</td>
-      </ng-container>
-
-      <!-- Role Column -->
-      <ng-container matColumnDef="role">
-        <th mat-header-cell *matHeaderCellDef>Rol</th>
-        <td mat-cell *matCellDef="let user">
-          <mat-chip [color]="getRoleColor(user.role)">
-            {{ getRoleLabel(user.role) }}
-          </mat-chip>
-        </td>
-      </ng-container>
-
-      <!-- Companies Count Column -->
-      <ng-container matColumnDef="companiesCount">
-        <th mat-header-cell *matHeaderCellDef>Empresas Asignadas</th>
-        <td mat-cell *matCellDef="let user">
-          {{ user.companies?.length || 0 }}
-        </td>
-      </ng-container>
-
-      <!-- Actions Column -->
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>Acciones</th>
-        <td mat-cell *matCellDef="let user">
-          <button mat-icon-button color="primary" (click)="openEditDialog(user)">
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button mat-icon-button color="warn" (click)="deleteUser(user)">
-            <mat-icon>delete</mat-icon>
-          </button>
-        </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-    </table>
-
-    <div *ngIf="loading()" class="loading-container">Cargando...</div>
-
-    <div *ngIf="!loading() && users().length === 0" class="empty-state">
-      No hay usuarios registrados
-    </div>
+    <app-data-table
+      [columns]="columns"
+      [data]="users()"
+      [actions]="actions"
+      [loading]="loading()"
+      [showPagination]="true"
+      [pageSize]="10"
+      [showIndex]="true"
+      indexHeader="#"
+    >
+    </app-data-table>
   </mat-card-content>
 </mat-card>

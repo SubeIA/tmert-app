@@ -78,7 +78,6 @@ export class UserFormDialogComponent implements OnInit {
     if (this.userForm.valid) {
       const formValue = this.userForm.getRawValue();
 
-      // Remove password if edit mode and empty
       if (this.isEditMode && !formValue.password) {
         delete formValue.password;
       }

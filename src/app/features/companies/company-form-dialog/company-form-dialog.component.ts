@@ -58,13 +58,11 @@ export class CompanyFormDialogComponent {
     const formValue = this.companyForm.value;
 
     if (this.isEditMode && this.data) {
-      // Edit mode: return full company object
       this.dialogRef.close({
         ...this.data,
         ...formValue,
       });
     } else {
-      // Create mode: return CreateCompanyDto
       this.dialogRef.close(formValue as CreateCompanyDto);
     }
   }

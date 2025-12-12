@@ -29,13 +29,23 @@ export class UserManagementService {
   private functions = inject(Functions);
 
   async createUser(data: CreateUserData): Promise<CloudFunctionResponse> {
-    const createUserFn = httpsCallable<CreateUserData, CloudFunctionResponse>(
-      this.functions,
-      'createUser'
-    );
+    try {
+      const createUserFn = httpsCallable<CreateUserData, CloudFunctionResponse>(
+        this.functions,
+        'createUser'
+      );
 
-    const result = await createUserFn(data);
-    return result.data;
+      const result = await createUserFn(data);
+      return result.data;
+    } catch (error: any) {
+      console.error('Cloud Function Error Details:', {
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        fullError: error,
+      });
+      throw error;
+    }
   }
 
   async updateUser(data: UpdateUserData): Promise<CloudFunctionResponse> {

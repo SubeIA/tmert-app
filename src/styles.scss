@@ -67,7 +67,6 @@ body {
   box-sizing: border-box;
 }
 
-// Modern scrollbar
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -86,7 +85,6 @@ body {
   }
 }
 
-// Glass morphism effect
 .glass {
   background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(10px);
@@ -94,7 +92,6 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-// Modern card styles
 .modern-card {
   background: var(--tmert-surface-elevated);
   border-radius: var(--tmert-radius-lg);
@@ -108,7 +105,6 @@ body {
   }
 }
 
-// Gradient text
 .gradient-text {
   background: var(--tmert-gradient-primary);
   -webkit-background-clip: text;
@@ -116,7 +112,6 @@ body {
   background-clip: text;
 }
 
-// Modern button styles
 .btn-primary {
   background: var(--tmert-gradient-primary) !important;
   color: white !important;
@@ -147,7 +142,6 @@ body {
   }
 }
 
-// Login styles
 .login-container {
   min-height: 100vh;
   display: flex;
@@ -241,7 +235,6 @@ body {
   margin-bottom: 24px;
 }
 
-// Animations
 @keyframes fadeInUp {
   from {
     opacity: 0;

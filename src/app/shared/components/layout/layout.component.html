@@ -19,11 +19,4 @@
       </div>
     </mat-sidenav-content>
   </mat-sidenav-container>
-
-  <app-chat-assistant
-    [isOpen]="chatOpened()"
-    (togglePanel)="onChatToggle($event)"
-    (sendMessage)="onChatMessage($event)"
-    (clearChat)="onClearChat()"
-  ></app-chat-assistant>
 </div>

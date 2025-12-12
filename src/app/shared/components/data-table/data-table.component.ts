@@ -42,7 +42,6 @@ export interface TableAction<T = Record<string, unknown>> {
   styleUrls: ['./data-table.component.scss'],
 })
 export class DataTableComponent<T = Record<string, unknown>> implements AfterViewInit {
-  // Inputs
   columns = input.required<TableColumn<T>[]>();
   data = input.required<T[]>();
   actions = input<TableAction<T>[]>([]);
@@ -54,27 +53,21 @@ export class DataTableComponent<T = Record<string, unknown>> implements AfterVie
   striped = input<boolean>(true);
   hoverable = input<boolean>(true);
 
-  // Pagination inputs
   showPagination = input<boolean>(true);
   pageSize = input<number>(10);
   pageSizeOptions = input<number[]>([5, 10, 25, 50, 100]);
   showFirstLastButtons = input<boolean>(true);
 
-  // Index column
   showIndex = input<boolean>(false);
   indexHeader = input<string>('#');
 
-  // Outputs
   rowClick = output<T>();
 
-  // ViewChild
   paginator = viewChild<MatPaginator>(MatPaginator);
 
-  // DataSource
   dataSource = new MatTableDataSource<T>([]);
 
   constructor() {
-    // Update dataSource when data changes
     effect(() => {
       this.dataSource.data = this.data();
     });
@@ -87,19 +80,15 @@ export class DataTableComponent<T = Record<string, unknown>> implements AfterVie
     }
   }
 
-  // Get displayed columns including index and actions
   getDisplayedColumns(): string[] {
     const cols: string[] = [];
 
-    // Add index column first if enabled
     if (this.showIndex()) {
       cols.push('index');
     }
 
-    // Add data columns
     cols.push(...this.columns().map(col => col.key));
 
-    // Add actions column last if enabled
     if (this.showActions() && this.actions().length > 0) {
       cols.push('actions');
     }
@@ -107,12 +96,10 @@ export class DataTableComponent<T = Record<string, unknown>> implements AfterVie
     return cols;
   }
 
-  // Get column definition
   getColumn(key: string): TableColumn<T> | undefined {
     return this.columns().find(col => col.key === key);
   }
 
-  // Get cell value
   getCellValue(row: T, column: TableColumn<T>): string | number {
     if (column.render) {
       return column.render(row);
@@ -121,7 +108,6 @@ export class DataTableComponent<T = Record<string, unknown>> implements AfterVie
     return typeof value === 'string' || typeof value === 'number' ? value : '';
   }
 
-  // Get cell class
   getCellClass(row: T, column: TableColumn<T>): string {
     if (typeof column.cellClass === 'function') {
       return column.cellClass(row);
@@ -129,17 +115,14 @@ export class DataTableComponent<T = Record<string, unknown>> implements AfterVie
     return column.cellClass || '';
   }
 
-  // Check if action should be shown
   shouldShowAction(action: TableAction<T>, row: T): boolean {
     return action.show ? action.show(row) : true;
   }
 
-  // Check if action is disabled
   isActionDisabled(action: TableAction<T>, row: T): boolean {
     return action.disabled ? action.disabled(row) : false;
   }
 
-  // Handle action click
   onActionClick(action: TableAction<T>, row: T, event: Event): void {
     event.stopPropagation();
     if (!this.isActionDisabled(action, row)) {
@@ -147,7 +130,6 @@ export class DataTableComponent<T = Record<string, unknown>> implements AfterVie
     }
   }
 
-  // Get row index considering pagination
   getRowIndex(index: number): number {
     const paginatorInstance = this.paginator();
     if (paginatorInstance && this.showPagination()) {
@@ -156,7 +138,6 @@ export class DataTableComponent<T = Record<string, unknown>> implements AfterVie
     return index + 1;
   }
 
-  // Handle row click
   onRowClick(row: T): void {
     this.rowClick.emit(row);
   }

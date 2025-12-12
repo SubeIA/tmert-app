@@ -54,6 +54,7 @@ export const evaluatorGuard: CanActivateFn = () => {
   }
 
   const currentUser = authService.currentUser();
+
   const allowedRoles = ['admin', 'evaluator'];
 
   if (currentUser?.role && allowedRoles.includes(currentUser.role)) {

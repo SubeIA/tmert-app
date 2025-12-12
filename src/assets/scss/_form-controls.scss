@@ -1,12 +1,6 @@
-// =============================================================================
-// Form Controls - Estilos globales para componentes reutilizables
-// Diseño limpio y profesional
-// =============================================================================
-
 @use "sass:color";
 
-// Variables - Color palette
-$primary-color: #1e3a5f; // Azul oscuro para bordes
+$primary-color: #1e3a5f;
 $primary-light: #2d5a8b;
 $primary-dark: #152a45;
 $secondary-color: #3b82f6;
@@ -20,18 +14,15 @@ $label-color: $primary-color;
 $border-color: $primary-color;
 $border-hover-color: $primary-dark;
 $background-color: #ffffff;
-$background-focus: #e8f4fc; // Fondo azul claro al enfocar
+$background-focus: #e8f4fc;
 $transition-speed: 0.2s;
 $form-control-margin: 1.25rem;
 $error-font-size: 0.8125rem;
 $hint-font-size: 0.8125rem;
-$border-radius: 4px; // Bordes ligeramente redondeados
+$border-radius: 4px;
 $input-height: 52px;
 $font-size-input: 0.9375rem;
 $font-size-label: 0.875rem;
-// =============================================================================
-// Estilos Base para Form Fields
-// =============================================================================
 
 @mixin form-field-base {
   display: block;
@@ -57,7 +48,6 @@ $font-size-label: 0.875rem;
         padding: 0 4px;
       }
 
-      // Wrapper principal
       .mat-mdc-text-field-wrapper {
         padding: 0 16px;
         border-radius: $border-radius;
@@ -72,13 +62,11 @@ $font-size-label: 0.875rem;
         }
       }
 
-      // Input container
       .mat-mdc-form-field-infix {
         min-height: $input-height;
         padding: 14px 0;
       }
 
-      // Bordes del outline
       .mdc-notched-outline {
         .mdc-notched-outline__leading {
           border-radius: $border-radius 0 0 $border-radius;
@@ -98,7 +86,6 @@ $font-size-label: 0.875rem;
         }
       }
 
-      // Label flotante
       .mat-mdc-floating-label {
         font-size: $font-size-label;
         color: $label-color;
@@ -113,7 +100,6 @@ $font-size-label: 0.875rem;
         }
       }
 
-      // Input text
       input.mat-mdc-input-element,
       textarea.mat-mdc-input-element {
         font-size: $font-size-input;
@@ -128,10 +114,6 @@ $font-size-label: 0.875rem;
     }
   }
 }
-
-// =============================================================================
-// Estilos para Errores y Hints
-// =============================================================================
 
 @mixin form-field-error-styles {
   .mat-mdc-form-field-error {
@@ -157,10 +139,9 @@ $font-size-label: 0.875rem;
     margin-top: 4px;
   }
 
-  // Estado de error
   &.mat-form-field-invalid {
     .mat-mdc-text-field-wrapper {
-      background: #fef2f2; // Fondo rojo muy claro
+      background: #fef2f2;
     }
 
     .mdc-notched-outline__leading,
@@ -176,10 +157,6 @@ $font-size-label: 0.875rem;
   }
 }
 
-// =============================================================================
-// Estilos de Interacción (hover, focus)
-// =============================================================================
-
 @mixin form-field-interactions {
   .mat-mdc-text-field-wrapper {
     transition:
@@ -189,7 +166,6 @@ $font-size-label: 0.875rem;
     border-radius: $border-radius;
   }
 
-  // Focus state - fondo azul claro
   &.mat-focused {
     .mat-mdc-text-field-wrapper {
       background: $background-focus;
@@ -207,7 +183,6 @@ $font-size-label: 0.875rem;
     background-color: transparent;
   }
 
-  // Íconos
   .mat-mdc-form-field-icon-suffix {
     padding-right: 4px;
 
@@ -232,11 +207,6 @@ $font-size-label: 0.875rem;
   }
 }
 
-// =============================================================================
-// Estilos específicos por tipo de control
-// =============================================================================
-
-// Input & Textarea
 @mixin input-textarea-styles {
   @include form-field-base;
 
@@ -248,7 +218,6 @@ $font-size-label: 0.875rem;
   }
 }
 
-// Select
 @mixin select-styles {
   @include form-field-base;
 
@@ -290,7 +259,6 @@ $font-size-label: 0.875rem;
   }
 }
 
-// Datepicker
 @mixin datepicker-styles {
   @include form-field-base;
 
@@ -326,7 +294,6 @@ $font-size-label: 0.875rem;
   }
 }
 
-// Checkbox - Estilo pill
 @mixin checkbox-styles {
   display: block;
   margin-bottom: $form-control-margin;
@@ -381,7 +348,6 @@ $font-size-label: 0.875rem;
   }
 }
 
-// Textarea específico - Compacto
 @mixin textarea-specific {
   textarea {
     resize: vertical;
@@ -402,10 +368,6 @@ $font-size-label: 0.875rem;
     }
   }
 }
-
-// =============================================================================
-// Mensajes de error y utilidades - Compacto
-// =============================================================================
 
 @mixin form-error-message {
   background: linear-gradient(135deg, rgba($error-color, 0.08) 0%, rgba($error-color, 0.04) 100%);
@@ -442,10 +404,6 @@ $font-size-label: 0.875rem;
   }
 }
 
-// =============================================================================
-// Estados disabled - Elegante
-// =============================================================================
-
 @mixin disabled-state {
   &.mat-form-field-disabled {
     opacity: 0.55;
@@ -466,10 +424,6 @@ $font-size-label: 0.875rem;
   }
 }
 
-// =============================================================================
-// Aplicar estilos globales
-// =============================================================================
-
 .app-input,
 .app-textarea,
 .app-select,
@@ -480,10 +434,6 @@ $font-size-label: 0.875rem;
     }
   }
 }
-
-// =============================================================================
-// Utilidades adicionales para layouts compactos
-// =============================================================================
 
 @mixin form-row {
   display: flex;

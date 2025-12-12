@@ -5,18 +5,10 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { HeaderComponent } from './header/header.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
-import { ChatAssistantComponent } from '../chat-assistant/chat-assistant.component';
 
 @Component({
   selector: 'app-layout',
-  imports: [
-    RouterOutlet,
-    MaterialModule,
-    HeaderComponent,
-    SidenavComponent,
-    BreadcrumbComponent,
-    ChatAssistantComponent,
-  ],
+  imports: [RouterOutlet, MaterialModule, HeaderComponent, SidenavComponent, BreadcrumbComponent],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss',
 })
@@ -25,7 +17,6 @@ export class LayoutComponent {
 
   sidenavOpened = signal(true);
   isMobile = signal(false);
-  chatOpened = signal(false);
 
   sidenavMode = computed(() => (this.isMobile() ? 'over' : 'side'));
 
@@ -46,19 +37,5 @@ export class LayoutComponent {
     if (this.isMobile()) {
       this.sidenavOpened.set(false);
     }
-  }
-
-  onChatToggle(isOpen: boolean): void {
-    this.chatOpened.set(isOpen);
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onChatMessage(_message: string): void {
-    // TODO: Integrar con servicio de IA/API
-    // Aquí puedes llamar a tu backend o servicio de chat
-  }
-
-  onClearChat(): void {
-    // TODO: Implementar lógica de limpieza si es necesario
   }
 }

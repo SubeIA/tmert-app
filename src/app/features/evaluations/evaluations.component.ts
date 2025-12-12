@@ -8,10 +8,12 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatDialog } from '@angular/material/dialog';
 import { EvaluationFirestoreService } from '@core/services/firestore/evaluation-firestore.service';
 import { CompanyFirestoreService } from '@core/services/firestore/company-firestore.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { TmertEvaluation, EvaluationStatus } from '@models/evaluation.model';
+import { SelectCompanyDialogComponent } from './select-company-dialog';
 
 @Component({
   selector: 'app-evaluations',
@@ -34,6 +36,7 @@ export class EvaluationsComponent implements OnInit {
   private companyService = inject(CompanyFirestoreService);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private dialog = inject(MatDialog);
 
   allEvaluations = signal<TmertEvaluation[]>([]);
   loading = signal(false);
@@ -69,7 +72,38 @@ export class EvaluationsComponent implements OnInit {
   }
 
   async createNewEvaluation() {
-    // TODO: Abrir diálogo para seleccionar empresa y crear evaluación
+    const dialogRef = this.dialog.open(SelectCompanyDialogComponent, {
+      width: '500px',
+      disableClose: false,
+    });
+
+    const company = await dialogRef.afterClosed().toPromise();
+
+    if (!company) return;
+
+    const user = this.currentUser();
+    if (!user) return;
+
+    this.loading.set(true);
+    try {
+      const evaluationId = await this.evaluationService.createEvaluation(
+        company.id,
+        company.name,
+        user.id,
+        user.name || user.email
+      );
+
+      const result = await this.router.navigate(['/tmert-evaluation', evaluationId]);
+
+      if (!result) {
+        alert('Error al navegar al formulario de evaluación');
+      }
+    } catch (error) {
+      console.error('Error creating evaluation:', error);
+      alert('Error al crear la evaluación. Por favor, intenta nuevamente.');
+    } finally {
+      this.loading.set(false);
+    }
   }
 
   continueEvaluation(evaluation: TmertEvaluation) {

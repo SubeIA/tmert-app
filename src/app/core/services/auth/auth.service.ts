@@ -25,7 +25,6 @@ export class AuthService {
   readonly loading = this.state.loading;
   readonly error = this.state.error;
 
-  // Alias for better semantics
   get currentUser() {
     return this.state.user;
   }

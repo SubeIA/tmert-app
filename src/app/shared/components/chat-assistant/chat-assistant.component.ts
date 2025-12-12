@@ -38,20 +38,13 @@ export interface ChatMessage {
 export class ChatAssistantComponent {
   @Input() title = 'Asistente TMERT';
   @Input() placeholder = 'Escribe tu pregunta...';
-  @Input() isOpen = false;
 
   @Output() sendMessage = new EventEmitter<string>();
-  @Output() togglePanel = new EventEmitter<boolean>();
   @Output() clearChat = new EventEmitter<void>();
 
   messages = signal<ChatMessage[]>([]);
   isLoading = signal(false);
   inputMessage = '';
-
-  onTogglePanel(): void {
-    this.isOpen = !this.isOpen;
-    this.togglePanel.emit(this.isOpen);
-  }
 
   onSendMessage(): void {
     if (!this.inputMessage.trim() || this.isLoading()) {

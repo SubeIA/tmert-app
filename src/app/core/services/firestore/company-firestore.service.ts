@@ -23,7 +23,6 @@ export class CompanyFirestoreService {
   private readonly COMPANIES_COLLECTION = 'companies';
 
   async createCompany(companyData: CreateCompanyDto): Promise<string> {
-    console.log(companyData);
     const companyRef = doc(collection(this.firestore, this.COMPANIES_COLLECTION));
 
     const data: Record<string, unknown> = {

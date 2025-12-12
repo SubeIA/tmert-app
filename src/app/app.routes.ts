@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { authGuard } from '@core/guards/auth.guard';
-import { adminGuard, evaluatorGuard } from '@core/guards/role.guard';
 
 export const routes: Routes = [
   {
@@ -45,7 +44,7 @@ export const routes: Routes = [
       {
         path: 'users',
         data: { breadcrumb: 'Usuarios', roles: ['admin'] },
-        canActivate: [authGuard, adminGuard],
+        canActivate: [],
         loadComponent: () => import('@features/users/users.component').then(m => m.UsersComponent),
       },
       {
@@ -57,7 +56,7 @@ export const routes: Routes = [
       {
         path: 'tmert-evaluation',
         data: { breadcrumb: 'Evaluación TMERT' },
-        canActivate: [authGuard, evaluatorGuard],
+        canActivate: [authGuard],
         loadChildren: () =>
           import('@features/tmert-evaluation/tmert-evaluation.routes').then(
             m => m.TMERT_EVALUATION_ROUTES

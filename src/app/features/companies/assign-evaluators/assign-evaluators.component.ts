@@ -53,7 +53,6 @@ export class AssignEvaluatorsComponent implements OnInit {
   async loadData() {
     this.loading.set(true);
     try {
-      // Load company
       const company = await this.companyService.getCompany(this.companyId());
       this.company.set(company);
 
@@ -86,17 +85,14 @@ export class AssignEvaluatorsComponent implements OnInit {
       const currentIds = this.company()?.evaluatorIds || [];
       const newIds = this.selection.selected;
 
-      // Find added and removed evaluators
       const added = newIds.filter(id => !currentIds.includes(id));
       const removed = currentIds.filter(id => !newIds.includes(id));
 
-      // Add new evaluators
       for (const evaluatorId of added) {
         await this.companyService.addEvaluatorToCompany(this.companyId(), evaluatorId);
         await this.userService.addCompanyToUser(evaluatorId, this.companyId());
       }
 
-      // Remove evaluators
       for (const evaluatorId of removed) {
         await this.companyService.removeEvaluatorFromCompany(this.companyId(), evaluatorId);
         await this.userService.removeCompanyFromUser(evaluatorId, this.companyId());

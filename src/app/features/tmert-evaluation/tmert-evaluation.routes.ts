@@ -6,4 +6,9 @@ export const TMERT_EVALUATION_ROUTES: Routes = [
     loadComponent: () =>
       import('./tmert-evaluation.component').then(m => m.TmertEvaluationComponent),
   },
+  {
+    path: ':id',
+    loadComponent: () =>
+      import('./tmert-evaluation.component').then(m => m.TmertEvaluationComponent),
+  },
 ];

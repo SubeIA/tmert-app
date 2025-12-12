@@ -1,15 +1,5 @@
-<div class="chat-assistant" [class.open]="isOpen">
-  <button
-    mat-fab
-    class="toggle-button"
-    (click)="onTogglePanel()"
-    [matTooltip]="isOpen ? 'Cerrar asistente' : 'Abrir asistente'"
-    matTooltipPosition="left"
-  >
-    <mat-icon>{{ isOpen ? 'close' : 'smart_toy' }}</mat-icon>
-  </button>
-
-  <div class="chat-panel" *ngIf="isOpen">
+<div class="chat-assistant">
+  <div class="chat-panel">
     <div class="chat-header">
       <div class="header-content">
         <div class="assistant-icon">

@@ -30,21 +30,17 @@ export class SidenavComponent {
 
   sidebarConfig = SIDEBAR_CONFIG;
 
-  // Filter menu items based on user role
   menuItems = computed(() => {
     const currentUser = this.authService.currentUser();
     const userRole = currentUser?.role;
 
     return SIDEBAR_NAV_ITEMS.filter(item => {
-      // If item has no role restrictions, show it to everyone
       if (!item.roles || item.roles.length === 0) {
         return true;
       }
-      // If user has no role, hide restricted items
       if (!userRole) {
         return false;
       }
-      // Show item if user's role is in the allowed roles
       return item.roles.includes(userRole);
     });
   });

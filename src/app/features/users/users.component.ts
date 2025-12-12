@@ -1,6 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
@@ -15,19 +14,20 @@ import {
 } from '@core/services/user-management.service';
 import { User } from '@models/user.model';
 import { UserFormDialogComponent } from './user-form-dialog/user-form-dialog.component';
+import { DataTableComponent, TableColumn, TableAction } from '@shared/components';
 
 @Component({
   selector: 'app-users',
   standalone: true,
   imports: [
     CommonModule,
-    MatTableModule,
     MatButtonModule,
     MatIconModule,
     MatDialogModule,
     MatCardModule,
     MatChipsModule,
     MatSnackBarModule,
+    DataTableComponent,
   ],
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss'],
@@ -40,7 +40,50 @@ export class UsersComponent implements OnInit {
 
   users = signal<User[]>([]);
   loading = signal(false);
-  displayedColumns: string[] = ['name', 'email', 'role', 'companiesCount', 'actions'];
+
+  columns: TableColumn<User>[] = [
+    {
+      key: 'name',
+      header: 'Nombre',
+    },
+    {
+      key: 'email',
+      header: 'Email',
+    },
+    {
+      key: 'role',
+      header: 'Rol',
+      render: (user: User) => {
+        const labels: Record<string, string> = {
+          admin: 'Administrador',
+          evaluator: 'Evaluador',
+          viewer: 'Visualizador',
+        };
+        return labels[user.role || ''] || user.role || '-';
+      },
+      cellClass: (user: User) => `role-chip role-${user.role}`,
+    },
+    {
+      key: 'companiesCount',
+      header: 'Empresas Asignadas',
+      render: (user: User) => (user.companyIds?.length || 0).toString(),
+    },
+  ];
+
+  actions: TableAction<User>[] = [
+    {
+      icon: 'edit',
+      label: 'Editar',
+      color: 'primary',
+      handler: (user: User) => this.openEditDialog(user),
+    },
+    {
+      icon: 'delete',
+      label: 'Eliminar',
+      color: 'warn',
+      handler: (user: User) => this.deleteUser(user),
+    },
+  ];
 
   async ngOnInit() {
     await this.loadUsers();
@@ -91,9 +134,22 @@ export class UsersComponent implements OnInit {
       const response = await this.userManagement.createUser(data);
       this.snackBar.open(response.message, 'Cerrar', { duration: 3000 });
       await this.loadUsers();
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Error creating user:', error);
-      const message = error instanceof Error ? error.message : 'Error al crear usuario';
+      console.error('Error code:', error.code);
+      console.error('Error message:', error.message);
+      console.error('Error details:', error.details);
+
+      let message = 'Error al crear usuario';
+
+      if (error.code === 'functions/not-found') {
+        message = 'Cloud Function no encontrada. Asegúrate de que las funciones estén desplegadas.';
+      } else if (error.code === 'functions/unauthenticated') {
+        message = 'No tienes permisos para crear usuarios.';
+      } else if (error.message) {
+        message = error.message;
+      }
+
       this.snackBar.open(message, 'Cerrar', { duration: 5000 });
     } finally {
       this.loading.set(false);
@@ -132,23 +188,5 @@ export class UsersComponent implements OnInit {
     } finally {
       this.loading.set(false);
     }
-  }
-
-  getRoleLabel(role: string): string {
-    const labels: Record<string, string> = {
-      admin: 'Administrador',
-      evaluator: 'Evaluador',
-      viewer: 'Visualizador',
-    };
-    return labels[role] || role;
-  }
-
-  getRoleColor(role: string): 'primary' | 'accent' | 'warn' {
-    const colors: Record<string, 'primary' | 'accent' | 'warn'> = {
-      admin: 'warn',
-      evaluator: 'primary',
-      viewer: 'accent',
-    };
-    return colors[role] || 'primary';
   }
 }

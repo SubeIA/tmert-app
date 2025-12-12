@@ -82,7 +82,6 @@
   }
 }
 
-// Column classes
 .col-1 {
   grid-column: span 1;
 }
@@ -120,14 +119,12 @@
   grid-column: span 12;
 }
 
-// Responsive: en mobile todos los campos full width
 @media (max-width: 768px) {
   [class*="col-"] {
     grid-column: span 12 !important;
   }
 }
 
-// Tablet: ajustar columnas pequeñas
 @media (max-width: 1024px) and (min-width: 769px) {
   .col-1,
   .col-2,
@@ -331,7 +328,6 @@
     }
   }
 
-  // Estilos de form fields más compactos
   .mat-mdc-form-field {
     width: 100%;
 
@@ -359,7 +355,6 @@
     }
   }
 
-  // Inputs más compactos
   input.mat-mdc-input-element,
   textarea.mat-mdc-input-element {
     font-size: 0.875rem;
@@ -387,7 +382,6 @@ mat-card-actions {
   }
 }
 
-// Animaciones
 @keyframes fadeInUp {
   from {
     opacity: 0;
