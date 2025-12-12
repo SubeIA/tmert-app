@@ -9,7 +9,12 @@ import { MatChipsModule } from '@angular/material/chips';
 import { CompanyFirestoreService } from '@core/services/firestore/company-firestore.service';
 import { Company, CreateCompanyDto } from '@models/company.model';
 import { CompanyFormDialogComponent } from './company-form-dialog/company-form-dialog.component';
-import { DataTableComponent, TableColumn, TableAction } from '@shared/components';
+import {
+  DataTableComponent,
+  TableColumn,
+  TableAction,
+  TableSkeletonComponent,
+} from '@shared/components';
 
 @Component({
   selector: 'app-companies',
@@ -22,6 +27,7 @@ import { DataTableComponent, TableColumn, TableAction } from '@shared/components
     MatCardModule,
     MatChipsModule,
     DataTableComponent,
+    TableSkeletonComponent,
   ],
   templateUrl: './companies.component.html',
   styleUrls: ['./companies.component.scss'],
@@ -97,6 +103,9 @@ export class CompaniesComponent implements OnInit {
   async loadCompanies() {
     this.loading.set(true);
     try {
+      // Delay de 2 segundos para probar el skeleton
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
       const companies = await this.companyService.getAllCompanies();
       this.companies.set(companies);
     } catch (error) {
