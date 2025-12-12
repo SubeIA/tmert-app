@@ -6,7 +6,7 @@
 
   <mat-divider></mat-divider>
 
-  @for (item of menuItems; track item.route) {
+  @for (item of menuItems(); track item.route) {
     <a
       mat-list-item
       [routerLink]="item.route"

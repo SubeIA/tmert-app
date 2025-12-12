@@ -1,32 +1,27 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
-import { MatTableModule } from '@angular/material/table';
+import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { CompanyFirestoreService } from '@core/services/firestore/company-firestore.service';
 import { Company, CreateCompanyDto } from '@models/company.model';
 import { CompanyFormDialogComponent } from './company-form-dialog/company-form-dialog.component';
+import { DataTableComponent, TableColumn, TableAction } from '@shared/components';
 
 @Component({
   selector: 'app-companies',
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule,
-    MatTableModule,
     MatButtonModule,
     MatIconModule,
     MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
     MatCardModule,
     MatChipsModule,
+    DataTableComponent,
   ],
   templateUrl: './companies.component.html',
   styleUrls: ['./companies.component.scss'],
@@ -34,16 +29,65 @@ import { CompanyFormDialogComponent } from './company-form-dialog/company-form-d
 export class CompaniesComponent implements OnInit {
   private companyService = inject(CompanyFirestoreService);
   private dialog = inject(MatDialog);
+  private router = inject(Router);
 
   companies = signal<Company[]>([]);
   loading = signal(false);
-  displayedColumns: string[] = [
-    'name',
-    'rut',
-    'industry',
-    'contactName',
-    'evaluatorsCount',
-    'actions',
+
+  columns: TableColumn<Company>[] = [
+    {
+      key: 'name',
+      header: 'Empresa',
+      width: '25%',
+      render: row => row.name,
+    },
+    {
+      key: 'rut',
+      header: 'RUT',
+      width: '15%',
+      render: row => row.rut || '-',
+    },
+    {
+      key: 'industry',
+      header: 'Industria',
+      width: '20%',
+      render: row => row.industry || '-',
+    },
+    {
+      key: 'contactName',
+      header: 'Contacto',
+      width: '20%',
+      render: row => {
+        if (row.contactName) {
+          return row.contactEmail ? `${row.contactName} (${row.contactEmail})` : row.contactName;
+        }
+        return '-';
+      },
+    },
+    {
+      key: 'evaluatorIds',
+      header: 'Evaluadores',
+      width: '10%',
+      render: row => row.evaluatorIds?.length || 0,
+      cellClass: 'text-center',
+    },
+  ];
+
+  actions: TableAction<Company>[] = [
+    {
+      icon: 'edit',
+      label: 'Editar',
+      color: 'primary',
+      tooltip: 'Editar empresa',
+      handler: row => this.openEditDialog(row),
+    },
+    {
+      icon: 'person_add',
+      label: 'Asignar evaluadores',
+      color: 'accent',
+      tooltip: 'Asignar evaluadores',
+      handler: row => this.navigateToAssignEvaluators(row),
+    },
   ];
 
   async ngOnInit() {
@@ -110,5 +154,9 @@ export class CompaniesComponent implements OnInit {
     } finally {
       this.loading.set(false);
     }
+  }
+
+  navigateToAssignEvaluators(company: Company) {
+    this.router.navigate(['/companies', company.id, 'assign-evaluators']);
   }
 }

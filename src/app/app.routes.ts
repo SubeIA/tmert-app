@@ -56,7 +56,7 @@ export const routes: Routes = [
       },
       {
         path: 'tmert-evaluation',
-        data: { breadcrumb: 'Evaluación TMERT', roles: ['admin', 'evaluator'] },
+        data: { breadcrumb: 'Evaluación TMERT' },
         canActivate: [authGuard, evaluatorGuard],
         loadChildren: () =>
           import('@features/tmert-evaluation/tmert-evaluation.routes').then(

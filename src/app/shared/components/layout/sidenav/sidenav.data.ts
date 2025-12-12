@@ -19,13 +19,13 @@ export const SIDEBAR_NAV_ITEMS: NavItem[] = [
     label: 'Empresas',
     icon: 'business',
     route: '/companies',
-    roles: ['admin'],
+    roles: [],
   },
   {
     label: 'Usuarios',
     icon: 'people',
     route: '/users',
-    roles: ['admin'],
+    roles: [],
   },
   {
     label: 'Mis Evaluaciones',
@@ -36,7 +36,7 @@ export const SIDEBAR_NAV_ITEMS: NavItem[] = [
     label: 'Evaluación TMERT',
     icon: 'assignment',
     route: '/tmert-evaluation',
-    roles: ['admin', 'evaluator'],
+    roles: [],
   },
 ] as const;
 
