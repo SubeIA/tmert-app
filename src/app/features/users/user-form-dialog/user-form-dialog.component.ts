@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -11,6 +11,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { User } from '@models/user.model';
 import { Company } from '@models/company.model';
 import { CompanyFirestoreService } from '@core/services/firestore/company-firestore.service';
+import {
+  InputComponent,
+  SelectComponent,
+  type SelectOption,
+} from '@shared/components/form-controls';
 
 @Component({
   selector: 'app-user-form-dialog',
@@ -25,6 +30,8 @@ import { CompanyFirestoreService } from '@core/services/firestore/company-firest
     MatSelectModule,
     MatChipsModule,
     MatIconModule,
+    InputComponent,
+    SelectComponent,
   ],
   templateUrl: './user-form-dialog.component.html',
   styleUrls: ['./user-form-dialog.component.scss'],
@@ -73,6 +80,13 @@ export class UserFormDialogComponent implements OnInit {
       console.error('Error loading companies:', error);
     }
   }
+
+  companyOptions = computed<SelectOption[]>(() => {
+    return this.companies().map(company => ({
+      value: company.id,
+      label: company.name,
+    }));
+  });
 
   onSubmit() {
     if (this.userForm.valid) {

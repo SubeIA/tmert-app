@@ -103,9 +103,7 @@ export class CompaniesComponent implements OnInit {
   async loadCompanies() {
     this.loading.set(true);
     try {
-      // Delay de 2 segundos para probar el skeleton
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
+      await new Promise(resolve => setTimeout(resolve, 1000));
       const companies = await this.companyService.getAllCompanies();
       this.companies.set(companies);
     } catch (error) {

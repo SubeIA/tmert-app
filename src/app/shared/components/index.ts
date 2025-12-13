@@ -5,3 +5,4 @@ export * from './chat-assistant/chat-assistant.component';
 export * from './data-table';
 export * from './loading';
 export * from './table-skeleton';
+export * from './confirm-dialog/confirm-dialog.component';

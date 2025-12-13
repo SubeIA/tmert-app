@@ -83,11 +83,12 @@ $tmert-theme: mat.define-theme(
       tertiary: mat.$violet-palette,
     ),
     typography: (
-      brand-family: "Roboto, sans-serif",
-      plain-family: "Roboto, sans-serif",
+      brand-family: "IBM Plex Sans, sans-serif",
+      plain-family: "IBM Plex Sans, sans-serif",
+      bold-weight: 600,
     ),
     density: (
-      scale: 0,
+      scale: -1,
     ),
   )
 );

@@ -14,6 +14,12 @@ import { CompanyFirestoreService } from '@core/services/firestore/company-firest
 import { AuthService } from '@core/services/auth/auth.service';
 import { TmertEvaluation, EvaluationStatus } from '@models/evaluation.model';
 import { SelectCompanyDialogComponent } from './select-company-dialog';
+import {
+  TableSkeletonComponent,
+  DataTableComponent,
+  TableColumn,
+  TableAction,
+} from '@shared/components';
 
 @Component({
   selector: 'app-evaluations',
@@ -27,6 +33,8 @@ import { SelectCompanyDialogComponent } from './select-company-dialog';
     MatTabsModule,
     MatTableModule,
     MatProgressBarModule,
+    TableSkeletonComponent,
+    DataTableComponent,
   ],
   templateUrl: './evaluations.component.html',
   styleUrls: ['./evaluations.component.scss'],
@@ -42,8 +50,6 @@ export class EvaluationsComponent implements OnInit {
   loading = signal(false);
   currentUser = computed(() => this.authService.currentUser());
 
-  displayedColumns: string[] = ['company', 'status', 'progress', 'startDate', 'actions'];
-
   draftEvaluations = computed(() => this.allEvaluations().filter(e => e.status === 'draft'));
   inProgressEvaluations = computed(() =>
     this.allEvaluations().filter(e => e.status === 'in-progress')
@@ -51,6 +57,57 @@ export class EvaluationsComponent implements OnInit {
   completedEvaluations = computed(() =>
     this.allEvaluations().filter(e => e.status === 'completed')
   );
+
+  columns: TableColumn<TmertEvaluation>[] = [
+    {
+      key: 'companyName',
+      header: 'Empresa',
+    },
+    {
+      key: 'status',
+      header: 'Estado',
+      render: (evaluation: TmertEvaluation) => this.getStatusLabel(evaluation.status),
+      cellClass: (evaluation: TmertEvaluation) => `status-chip status-${evaluation.status}`,
+    },
+    {
+      key: 'progress',
+      header: 'Progreso',
+      render: (evaluation: TmertEvaluation) => `${evaluation.progress}%`,
+    },
+    {
+      key: 'startDate',
+      header: 'Fecha',
+      render: (evaluation: TmertEvaluation) =>
+        this.formatDate(evaluation.startDate || evaluation.createdAt),
+    },
+  ];
+
+  inProgressActions: TableAction<TmertEvaluation>[] = [
+    {
+      icon: 'edit',
+      label: 'Continuar',
+      color: 'primary',
+      handler: (evaluation: TmertEvaluation) => this.continueEvaluation(evaluation),
+    },
+  ];
+
+  draftActions: TableAction<TmertEvaluation>[] = [
+    {
+      icon: 'play_arrow',
+      label: 'Iniciar',
+      color: 'accent',
+      handler: (evaluation: TmertEvaluation) => this.continueEvaluation(evaluation),
+    },
+  ];
+
+  completedActions: TableAction<TmertEvaluation>[] = [
+    {
+      icon: 'visibility',
+      label: 'Ver',
+      color: 'primary',
+      handler: (evaluation: TmertEvaluation) => this.viewEvaluation(evaluation),
+    },
+  ];
 
   async ngOnInit() {
     await this.loadEvaluations();

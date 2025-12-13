@@ -1,26 +1,32 @@
-<mat-card>
-  <mat-card-header>
-    <mat-card-title>Gestión de Usuarios</mat-card-title>
-  </mat-card-header>
-
-  <mat-card-content>
-    <div class="actions-bar">
+<div class="users-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Gestión de Usuarios</mat-card-title>
       <button mat-raised-button color="primary" (click)="openCreateDialog()">
         <mat-icon>add</mat-icon>
-        Crear Usuario
+        Nuevo Usuario
       </button>
-    </div>
+    </mat-card-header>
 
-    <app-data-table
-      [columns]="columns"
-      [data]="users()"
-      [actions]="actions"
-      [loading]="loading()"
-      [showPagination]="true"
-      [pageSize]="10"
-      [showIndex]="true"
-      indexHeader="#"
-    >
-    </app-data-table>
-  </mat-card-content>
-</mat-card>
+    <mat-card-content>
+      @if (loading()) {
+        <app-table-skeleton [rows]="5" [columns]="5" />
+      } @else {
+        <app-data-table
+          [columns]="columns"
+          [data]="users()"
+          [actions]="actions"
+          [loading]="false"
+          [emptyMessage]="'No hay usuarios registrados'"
+          [striped]="true"
+          [hoverable]="true"
+          [showPagination]="true"
+          [pageSize]="10"
+          [pageSizeOptions]="[5, 10, 25, 50]"
+          [showIndex]="true"
+          [indexHeader]="'#'"
+        />
+      }
+    </mat-card-content>
+  </mat-card>
+</div>

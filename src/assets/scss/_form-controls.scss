@@ -226,6 +226,10 @@ $font-size-label: 0.875rem;
       @include form-field-error-styles;
       @include form-field-interactions;
 
+      .mat-mdc-text-field-wrapper {
+        background: $background-color !important;
+      }
+
       .mat-mdc-select-arrow-wrapper {
         transform: translateY(0);
         height: 20px;
@@ -244,6 +248,7 @@ $font-size-label: 0.875rem;
       .mat-mdc-select-trigger {
         height: auto;
         padding: 0;
+        background: transparent;
       }
 
       .mat-mdc-select-value {

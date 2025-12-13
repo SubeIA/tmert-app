@@ -14,7 +14,13 @@ import {
 } from '@core/services/user-management.service';
 import { User } from '@models/user.model';
 import { UserFormDialogComponent } from './user-form-dialog/user-form-dialog.component';
-import { DataTableComponent, TableColumn, TableAction } from '@shared/components';
+import {
+  DataTableComponent,
+  TableColumn,
+  TableAction,
+  TableSkeletonComponent,
+  ConfirmDialogComponent,
+} from '@shared/components';
 
 @Component({
   selector: 'app-users',
@@ -28,6 +34,7 @@ import { DataTableComponent, TableColumn, TableAction } from '@shared/components
     MatChipsModule,
     MatSnackBarModule,
     DataTableComponent,
+    TableSkeletonComponent,
   ],
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss'],
@@ -92,6 +99,7 @@ export class UsersComponent implements OnInit {
   async loadUsers() {
     this.loading.set(true);
     try {
+      await new Promise(resolve => setTimeout(resolve, 1000));
       const users = await this.userFirestore.getAllUsers();
       this.users.set(users);
     } catch (error) {
@@ -104,7 +112,7 @@ export class UsersComponent implements OnInit {
 
   openCreateDialog() {
     const dialogRef = this.dialog.open(UserFormDialogComponent, {
-      width: '600px',
+      width: '520px',
       data: null,
     });
 
@@ -117,7 +125,7 @@ export class UsersComponent implements OnInit {
 
   openEditDialog(user: User) {
     const dialogRef = this.dialog.open(UserFormDialogComponent, {
-      width: '600px',
+      width: '520px',
       data: user,
     });
 
@@ -172,7 +180,19 @@ export class UsersComponent implements OnInit {
   }
 
   async deleteUser(user: User) {
-    if (!confirm(`¿Estás seguro de eliminar al usuario ${user.name}?`)) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Eliminar Usuario',
+        message: `¿Estás seguro de que deseas eliminar al usuario <strong>${user.name}</strong>?`,
+        confirmText: 'Eliminar',
+        cancelText: 'Cancelar',
+        confirmColor: 'warn',
+      },
+    });
+
+    const confirmed = await dialogRef.afterClosed().toPromise();
+    if (!confirmed) {
       return;
     }
 

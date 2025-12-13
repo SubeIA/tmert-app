@@ -7,6 +7,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Company, CreateCompanyDto } from '@models/company.model';
+import {
+  InputComponent,
+  SelectComponent,
+  TextareaComponent,
+} from '@shared/components/form-controls';
 
 @Component({
   selector: 'app-company-form-dialog',
@@ -19,6 +24,9 @@ import { Company, CreateCompanyDto } from '@models/company.model';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
+    InputComponent,
+    SelectComponent,
+    TextareaComponent,
   ],
   templateUrl: './company-form-dialog.component.html',
   styleUrls: ['./company-form-dialog.component.scss'],
@@ -36,12 +44,9 @@ export class CompanyFormDialogComponent {
 
     this.companyForm = this.fb.group({
       name: [this.data?.name || '', [Validators.required, Validators.minLength(3)]],
-      rut: [this.data?.rut || ''],
+      rut: [this.data?.rut || '', [Validators.required]],
       address: [this.data?.address || ''],
       industry: [this.data?.industry || ''],
-      contactName: [this.data?.contactName || ''],
-      contactEmail: [this.data?.contactEmail || '', [Validators.email]],
-      contactPhone: [this.data?.contactPhone || ''],
     });
   }
 
