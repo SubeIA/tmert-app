@@ -53,19 +53,39 @@ mat-sidenav-content {
 }
 
 .page-container {
-  padding: 28px 40px;
+  padding: 24px;
   min-height: calc(100vh - 64px);
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
-  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  background: #f5f7fa;
 
   @media (max-width: 768px) {
-    padding: 20px;
+    padding: 16px;
   }
 
   @media (max-width: 480px) {
+    padding: 12px;
+  }
+}
+
+.content-wrapper {
+  max-width: 1600px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 24px;
+  min-height: calc(100vh - 140px);
+
+  @media (max-width: 768px) {
     padding: 16px;
+    border-radius: 8px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px;
+    border-radius: 6px;
   }
 }
 
