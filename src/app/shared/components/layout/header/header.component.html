@@ -8,22 +8,35 @@
   <span class="spacer"></span>
 
   @if (authService.user(); as user) {
-    <button
-      mat-icon-button
-      [matMenuTriggerFor]="userMenu"
-      [attr.aria-label]="UI.ARIA_LABELS.PROFILE_MENU"
-    >
-      <mat-icon>account_circle</mat-icon>
-    </button>
-    <mat-menu #userMenu="matMenu">
+    <div class="user-profile">
+      <div class="user-details">
+        <span class="user-name">{{ user.name || 'Usuario' }}</span>
+        <span class="user-role">{{ getRoleLabel(user.role) }}</span>
+      </div>
+      <button
+        mat-icon-button
+        [matMenuTriggerFor]="userMenu"
+        [attr.aria-label]="UI.ARIA_LABELS.PROFILE_MENU"
+        class="user-avatar"
+      >
+        <div class="avatar-circle">
+          {{ getInitials(user.name || user.email) }}
+        </div>
+      </button>
+    </div>
+    <mat-menu #userMenu="matMenu" class="user-menu">
       <div class="user-menu-header">
+        <div class="avatar-large">
+          {{ getInitials(user.name || user.email) }}
+        </div>
         <div class="user-info">
-          <strong>{{ user.name }}</strong>
+          <strong>{{ user.name || 'Usuario' }}</strong>
           <small>{{ user.email }}</small>
+          <span class="role-badge">{{ getRoleLabel(user.role) }}</span>
         </div>
       </div>
       <mat-divider></mat-divider>
-      <button mat-menu-item (click)="logout()">
+      <button mat-menu-item (click)="logout()" class="logout-item">
         <mat-icon>logout</mat-icon>
         <span>{{ UI.NAVIGATION.LOGOUT }}</span>
       </button>

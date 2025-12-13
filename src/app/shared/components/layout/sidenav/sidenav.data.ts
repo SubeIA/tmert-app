@@ -32,12 +32,6 @@ export const SIDEBAR_NAV_ITEMS: NavItem[] = [
     icon: 'assignment_turned_in',
     route: '/evaluations',
   },
-  {
-    label: 'Evaluación TMERT',
-    icon: 'assignment',
-    route: '/tmert-evaluation',
-    roles: [],
-  },
 ] as const;
 
 export const SIDEBAR_CONFIG = {

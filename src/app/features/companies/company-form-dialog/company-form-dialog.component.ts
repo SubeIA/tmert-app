@@ -7,11 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Company, CreateCompanyDto } from '@models/company.model';
-import {
-  InputComponent,
-  SelectComponent,
-  TextareaComponent,
-} from '@shared/components/form-controls';
+import { InputComponent, TextareaComponent } from '@shared/components/form-controls';
 
 @Component({
   selector: 'app-company-form-dialog',
@@ -25,7 +21,6 @@ import {
     MatButtonModule,
     MatIconModule,
     InputComponent,
-    SelectComponent,
     TextareaComponent,
   ],
   templateUrl: './company-form-dialog.component.html',

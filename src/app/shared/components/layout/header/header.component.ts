@@ -30,11 +30,31 @@ export class HeaderComponent {
   menuToggle = output<void>();
 
   readonly UI = COMMON_UI;
+
   toggleMenu(): void {
     this.menuToggle.emit();
   }
 
   logout(): void {
     this.authService.logout();
+  }
+
+  getInitials(name: string): string {
+    if (!name) return 'U';
+    const parts = name.split(' ');
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return name.substring(0, 2).toUpperCase();
+  }
+
+  getRoleLabel(role: string | undefined): string {
+    if (!role) return 'Usuario';
+    const labels: Record<string, string> = {
+      admin: 'Administrador',
+      evaluator: 'Evaluador',
+      viewer: 'Visualizador',
+    };
+    return labels[role] || role;
   }
 }
