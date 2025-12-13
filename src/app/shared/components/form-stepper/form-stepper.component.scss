@@ -139,69 +139,79 @@
 
 .step-actions {
   display: flex;
+  justify-content: space-between;
   align-items: center;
   gap: 12px;
-  padding: 16px 28px;
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
-  background: linear-gradient(180deg, rgba(248, 250, 252, 0.6) 0%, rgba(241, 245, 249, 0.8) 100%);
+  padding: 20px 24px;
+  border-top: 1px solid #e0e0e0;
+  background: white;
 
-  .spacer {
-    flex: 1;
+  .left-actions,
+  .right-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
 
   button {
+    padding: 0 28px;
+    height: 42px;
+    border-radius: 2px;
+    font-weight: 500;
     display: flex;
     align-items: center;
     gap: 8px;
-    font-weight: 600;
-    padding: 10px 20px;
-    border-radius: 10px;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
     font-size: 0.875rem;
-    letter-spacing: 0.01em;
 
     mat-icon {
       font-size: 18px;
       width: 18px;
       height: 18px;
-      transition: transform 0.25s ease;
     }
 
-    &.mat-mdc-raised-button {
-      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-      box-shadow: 0 3px 12px rgba(99, 102, 241, 0.35);
-
-      &:hover {
-        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
-        transform: translateY(-1px);
-
-        mat-icon {
-          transform: translateX(2px);
-        }
-      }
-
-      &:active {
-        transform: translateY(0);
-      }
-    }
-
-    &.mat-mdc-stroked-button {
-      border: 2px solid rgba(99, 102, 241, 0.3);
-      color: #6366f1;
-
-      &:hover {
-        background: rgba(99, 102, 241, 0.08);
-        border-color: rgba(99, 102, 241, 0.5);
-
-        mat-icon {
-          transform: translateX(-2px);
-        }
-      }
-    }
-
+    // Botón Cancelar (rojo)
+    &.cancel-btn,
     &[color="warn"] {
-      &:hover mat-icon {
-        transform: scale(1.05);
+      background: #dc3545;
+      color: white;
+      border: 2px solid #dc3545;
+
+      &:hover:not([disabled]) {
+        background: #c82333;
+        border-color: #c82333;
+      }
+    }
+
+    // Botón Anterior (stroked)
+    &.mat-mdc-stroked-button {
+      border: 2px solid #1976d2;
+      color: #1976d2;
+      background: white;
+
+      &:hover:not([disabled]) {
+        background: rgba(25, 118, 210, 0.08);
+        border-color: #0d47a1;
+      }
+    }
+
+    // Botón Siguiente/Enviar (primary flat)
+    &.mat-mdc-raised-button,
+    &[color="primary"] {
+      background: #1976d2;
+      color: white;
+      border: none;
+      box-shadow: none;
+
+      &:hover:not([disabled]) {
+        background: #0d47a1;
+      }
+
+      &:disabled {
+        background: #e0e0e0;
+        color: #999;
       }
     }
   }
@@ -367,7 +377,9 @@ mat-card-actions {
   padding: 16px 28px;
   border-top: 1px solid rgba(0, 0, 0, 0.05);
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
   background: linear-gradient(180deg, rgba(248, 250, 252, 0.6) 0%, rgba(241, 245, 249, 0.8) 100%);
 
   button {
@@ -379,6 +391,15 @@ mat-card-actions {
     font-weight: 600;
     font-size: 0.875rem;
     transition: all 0.25s ease;
+  }
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+
+    button {
+      width: 100%;
+      justify-content: center;
+    }
   }
 }
 

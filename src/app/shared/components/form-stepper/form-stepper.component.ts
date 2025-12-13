@@ -1,4 +1,13 @@
-import { Component, Input, Output, EventEmitter, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnInit,
+  OnChanges,
+  SimpleChanges,
+  inject,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -49,7 +58,7 @@ import { COMMON_UI } from '@core/constants';
   templateUrl: './form-stepper.component.html',
   styleUrl: './form-stepper.component.scss',
 })
-export class FormStepperComponent implements OnInit {
+export class FormStepperComponent implements OnInit, OnChanges {
   private fb = inject(FormBuilder);
 
   @Input() config!: FormStepperConfig;
@@ -63,6 +72,12 @@ export class FormStepperComponent implements OnInit {
 
   ngOnInit(): void {
     this.initializeForms();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['config'] && !changes['config'].firstChange) {
+      this.initializeForms();
+    }
   }
 
   private initializeForms(): void {
@@ -138,7 +153,10 @@ export class FormStepperComponent implements OnInit {
         validators.push(Validators.max(field.max));
       }
 
-      group[field.name] = [field.value !== undefined ? field.value : '', validators];
+      group[field.name] = [
+        { value: field.value !== undefined ? field.value : '', disabled: field.disabled || false },
+        validators,
+      ];
     });
 
     return this.fb.group(group);

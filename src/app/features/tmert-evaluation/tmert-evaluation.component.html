@@ -6,4 +6,9 @@
   ></app-form-stepper>
 
   <!-- Floating Chat Assistant -->
+  <app-floating-chat
+    [title]="'Asistente TMERT'"
+    [placeholder]="'Pregunta sobre la evaluación...'"
+    (sendMessage)="onChatMessage($event)"
+  ></app-floating-chat>
 </div>
