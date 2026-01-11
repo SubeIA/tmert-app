@@ -11,13 +11,16 @@ import {
   where,
   getDocs,
 } from '@angular/fire/firestore';
+import { firstValueFrom } from 'rxjs';
 import { TmertEvaluation } from '@models/evaluation.model';
+import { TmertService } from '../tmert/tmert.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EvaluationFirestoreService {
   private firestore = inject(Firestore);
+  private tmertService = inject(TmertService);
   private readonly EVALUATIONS_COLLECTION = 'tmert_evaluations';
 
   async createEvaluation(
@@ -29,6 +32,24 @@ export class EvaluationFirestoreService {
   ): Promise<string> {
     const evalRef = doc(collection(this.firestore, this.EVALUATIONS_COLLECTION));
 
+    // Crear thread para el asistente TMERT
+    let threadId: string | undefined;
+    try {
+      const threadResponse = await firstValueFrom(
+        this.tmertService.createThread({
+          evaluation_id: evalRef.id,
+          company_id: companyId,
+          company_name: companyName,
+          evaluator_id: evaluatorId,
+        })
+      );
+      threadId = threadResponse.id;
+      console.log('Thread creado para evaluación:', threadId);
+    } catch (error) {
+      console.warn('No se pudo crear el thread del asistente:', error);
+      // Continuar sin thread, se puede crear después
+    }
+
     const evaluationData: Record<string, unknown> = {
       id: evalRef.id,
       companyId,
@@ -37,6 +58,7 @@ export class EvaluationFirestoreService {
       evaluatorName,
       status: 'draft',
       progress: 0,
+      threadId,
       startDate: serverTimestamp(),
       data: initialData || {},
       createdAt: serverTimestamp(),
@@ -67,6 +89,7 @@ export class EvaluationFirestoreService {
         progress: data['progress'],
         currentStep: data['currentStep'],
         stepsData: data['stepsData'],
+        threadId: data['threadId'],
         startDate: data['startDate']?.toDate(),
         completedDate: data['completedDate']?.toDate(),
         data: data['data'] || {},

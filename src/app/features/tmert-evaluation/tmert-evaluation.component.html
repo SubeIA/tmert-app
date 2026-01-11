@@ -27,6 +27,7 @@
     [userId]="userId"
     [evaluationId]="evaluationId() ?? undefined"
     [companyId]="companyId() ?? undefined"
+    [threadId]="threadId() ?? undefined"
     (threadCreated)="onThreadCreated($event)"
     (messageReceived)="onMessageReceived($event)"
     (errorOccurred)="onChatError($event)"

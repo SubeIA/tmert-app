@@ -174,6 +174,12 @@ export class TmertEvaluationComponent implements OnInit, AfterViewInit {
         this.companyId.set(evaluation.companyId);
         this.companyName.set(evaluation.companyName);
 
+        // Cargar threadId si existe
+        if (evaluation.threadId) {
+          this.threadId.set(evaluation.threadId);
+          console.log('✅ Thread ID cargado:', evaluation.threadId);
+        }
+
         // Cargar RUT desde la empresa
         const company = await this.companyService.getCompany(evaluation.companyId);
         if (company?.rut) {
@@ -309,12 +315,22 @@ export class TmertEvaluationComponent implements OnInit, AfterViewInit {
 
   /**
    * Callback cuando se crea el thread del chat
+   * Guarda el threadId en la evaluación si no existía
    */
-  onThreadCreated(threadId: string): void {
-    console.log('intentanto TMERT creado para evaluación:', threadId);
+  async onThreadCreated(newThreadId: string): Promise<void> {
+    console.log('Thread TMERT creado para evaluación:', newThreadId);
+    this.threadId.set(newThreadId);
 
-    this.threadId.set(threadId);
-    console.log('Thread TMERT creado para evaluación:', threadId);
+    // Guardar el threadId en la evaluación si no tenía uno
+    const evalId = this.evaluationId();
+    if (evalId) {
+      try {
+        await this.evaluationService.updateEvaluation(evalId, { threadId: newThreadId });
+        console.log('✅ ThreadId guardado en la evaluación');
+      } catch (error) {
+        console.error('Error guardando threadId:', error);
+      }
+    }
   }
 
   /**

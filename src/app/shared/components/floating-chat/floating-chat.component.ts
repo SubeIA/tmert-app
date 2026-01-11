@@ -20,6 +20,7 @@ import { ChatAssistantComponent, ChatMessage } from '../chat-assistant/chat-assi
             [userId]="userId"
             [evaluationId]="evaluationId"
             [companyId]="companyId"
+            [existingThreadId]="threadId"
             (threadCreated)="onThreadCreated($event)"
             (messageReceived)="onMessageReceived($event)"
             (errorOccurred)="onErrorOccurred($event)"
@@ -180,6 +181,8 @@ export class FloatingChatComponent {
   @Input() userId?: string; // ID del usuario actual
   @Input() evaluationId?: string; // ID de la evaluación
   @Input() companyId?: string; // ID de la empresa
+  /** Thread ID existente para continuar conversación */
+  @Input() threadId?: string;
 
   @Output() threadCreated = new EventEmitter<string>();
   @Output() messageReceived = new EventEmitter<ChatMessage>();

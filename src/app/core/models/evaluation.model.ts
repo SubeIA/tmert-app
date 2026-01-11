@@ -8,6 +8,8 @@ export interface TmertEvaluation {
   progress: number;
   currentStep?: number;
   stepsData?: Record<string, Record<string, unknown>>;
+  /** Thread ID del asistente TMERT para esta evaluación */
+  threadId?: string;
   startDate?: Date;
   completedDate?: Date;
   data?: Record<string, unknown>;
@@ -25,4 +27,6 @@ export interface CreateEvaluationDto {
   evaluatorId: string;
   evaluatorName: string;
   initialData?: Record<string, unknown>;
+  /** Thread ID del asistente TMERT (opcional, se creará automáticamente si no se provee) */
+  threadId?: string;
 }

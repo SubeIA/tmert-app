@@ -1,5 +1,14 @@
 /* eslint-disable no-console */
-import { Component, Input, Output, EventEmitter, signal, inject, OnDestroy } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  signal,
+  inject,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -39,7 +48,7 @@ export interface ChatMessage {
   templateUrl: './chat-assistant.component.html',
   styleUrl: './chat-assistant.component.scss',
 })
-export class ChatAssistantComponent implements OnDestroy {
+export class ChatAssistantComponent implements OnInit, OnDestroy {
   private readonly tmertService = inject(TmertService);
   private readonly destroy$ = new Subject<void>();
 
@@ -49,6 +58,8 @@ export class ChatAssistantComponent implements OnDestroy {
   @Input() userId?: string; // ID del usuario
   @Input() evaluationId?: string; // ID de la evaluación (opcional para contexto)
   @Input() companyId?: string; // ID de la empresa (opcional para contexto)
+  /** Thread ID existente para continuar una conversación */
+  @Input() existingThreadId?: string;
 
   @Output() threadCreated = new EventEmitter<string>();
   @Output() messageReceived = new EventEmitter<ChatMessage>();
@@ -59,6 +70,15 @@ export class ChatAssistantComponent implements OnDestroy {
   inputMessage = '';
   threadId = signal<string | null>(null);
   error = signal<string | null>(null);
+
+  ngOnInit(): void {
+    // Si hay un threadId existente, usarlo y cargar mensajes
+    if (this.existingThreadId) {
+      this.threadId.set(this.existingThreadId);
+      console.log('Usando thread existente de la evaluación:', this.existingThreadId);
+      this.loadExistingMessages();
+    }
+  }
 
   ngOnDestroy(): void {
     this.destroy$.next();
@@ -109,6 +129,39 @@ export class ChatAssistantComponent implements OnDestroy {
   }
 
   /**
+   * Carga los mensajes existentes de un thread
+   */
+  private loadExistingMessages(): void {
+    const currentThreadId = this.threadId();
+    if (!currentThreadId) return;
+
+    this.isLoading.set(true);
+
+    this.tmertService
+      .listMessages(currentThreadId, 50, 'asc')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: response => {
+          const loadedMessages: ChatMessage[] = response.messages.map(msg => ({
+            id: msg.id,
+            role: msg.role,
+            content: msg.content,
+            timestamp: new Date(msg.created_at),
+          }));
+
+          this.messages.set(loadedMessages);
+          this.isLoading.set(false);
+          console.log(`Cargados ${loadedMessages.length} mensajes del thread`);
+        },
+        error: err => {
+          console.warn('No se pudieron cargar mensajes anteriores:', err.message);
+          this.isLoading.set(false);
+          // No mostrar error, simplemente continuar sin mensajes previos
+        },
+      });
+  }
+
+  /**
    * Envía un mensaje al asistente usando el servicio TMERT
    */
   onSendMessage(): void {
@@ -117,7 +170,7 @@ export class ChatAssistantComponent implements OnDestroy {
       return;
     }
 
-    // Si no hay thread, inicializar primero
+    // Si no hay thread, crear uno nuevo (solo para evaluaciones sin thread)
     if (!this.threadId()) {
       this.initializeThread();
       // Esperar a que se cree el thread antes de enviar
