@@ -1,15 +1,15 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://api.production.com/api',
-  tmertApiUrl: 'https://tmert-api.production.com',
+  apiUrl: 'https://api-prod.tudominio.com/api',
+  tmertApiUrl: 'https://tmert-api-prod.tudominio.com',
   appName: 'TMERT App',
   version: '1.0.0',
   firebase: {
-    apiKey: 'TU_API_KEY_PROD',
-    authDomain: 'TU_PROJECT_PROD.firebaseapp.com',
-    projectId: 'TU_PROJECT_ID_PROD',
-    storageBucket: 'TU_PROJECT_PROD.appspot.com',
-    messagingSenderId: 'TU_SENDER_ID_PROD',
-    appId: 'TU_APP_ID_PROD',
+    apiKey: 'TU_FIREBASE_API_KEY_PROD',
+    authDomain: 'tu-proyecto-prod.firebaseapp.com',
+    projectId: 'tu-proyecto-prod',
+    storageBucket: 'tu-proyecto-prod.firebasestorage.app',
+    messagingSenderId: 'TU_SENDER_ID',
+    appId: 'TU_APP_ID',
   },
 };

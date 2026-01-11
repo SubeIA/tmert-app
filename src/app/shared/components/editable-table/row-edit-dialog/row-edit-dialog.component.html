@@ -1,0 +1,102 @@
+<h2 mat-dialog-title>
+  <mat-icon>{{ data.isNew ? 'add_circle' : 'edit' }}</mat-icon>
+  {{ dialogTitle }}
+</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="row-form">
+    <div class="form-grid">
+      @for (column of data.columns; track column.name) {
+        <div class="form-field" [class.full-width]="column.type === 'textarea'">
+          @switch (column.type) {
+            @case ('text') {
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>{{ column.label }}</mat-label>
+                <input
+                  matInput
+                  [formControlName]="column.name"
+                  [placeholder]="column.placeholder || ''"
+                />
+                @if (
+                  column.required &&
+                  form.get(column.name)?.hasError('required') &&
+                  form.get(column.name)?.touched
+                ) {
+                  <mat-error>Este campo es requerido</mat-error>
+                }
+              </mat-form-field>
+            }
+            @case ('number') {
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>{{ column.label }}</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  [formControlName]="column.name"
+                  [placeholder]="column.placeholder || ''"
+                  [attr.min]="column.min"
+                  [attr.max]="column.max"
+                />
+                @if (
+                  column.required &&
+                  form.get(column.name)?.hasError('required') &&
+                  form.get(column.name)?.touched
+                ) {
+                  <mat-error>Este campo es requerido</mat-error>
+                }
+              </mat-form-field>
+            }
+            @case ('select') {
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>{{ column.label }}</mat-label>
+                <mat-select
+                  [formControlName]="column.name"
+                  [placeholder]="column.placeholder || ''"
+                >
+                  @for (option of column.options; track option.value) {
+                    <mat-option [value]="option.value">{{ option.label }}</mat-option>
+                  }
+                </mat-select>
+                @if (
+                  column.required &&
+                  form.get(column.name)?.hasError('required') &&
+                  form.get(column.name)?.touched
+                ) {
+                  <mat-error>Este campo es requerido</mat-error>
+                }
+              </mat-form-field>
+            }
+            @case ('checkbox') {
+              <div class="checkbox-field">
+                <mat-checkbox [formControlName]="column.name" color="primary">
+                  {{ column.label }}
+                </mat-checkbox>
+              </div>
+            }
+          }
+        </div>
+      }
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button type="button" (click)="onCancel()">
+    <mat-icon>close</mat-icon>
+    Cancelar
+  </button>
+  <button mat-raised-button color="primary" type="button" (click)="onSave()">
+    <mat-icon>save</mat-icon>
+    {{ data.isNew ? 'Agregar' : 'Guardar' }}
+  </button>
+</mat-dialog-actions>
+
+@if (data.chatConfig?.enabled) {
+  <app-floating-chat
+    title="Asistente TMERT"
+    placeholder="Consulta sobre el puesto de trabajo..."
+    [evaluationId]="data.chatConfig?.evaluationId || ''"
+    [companyId]="data.chatConfig?.companyId || ''"
+    [userId]="data.chatConfig?.userId || ''"
+  ></app-floating-chat>
+}

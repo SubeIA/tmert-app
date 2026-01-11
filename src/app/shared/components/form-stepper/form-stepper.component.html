@@ -195,6 +195,19 @@
                         [maxDate]="field.maxDate"
                       ></app-datepicker>
                     }
+                    @case ('table') {
+                      @if (field.tableConfig) {
+                        <app-editable-table
+                          [label]="field.label"
+                          [config]="field.tableConfig"
+                          [formControlName]="field.name"
+                          [enableChat]="enableTableChat"
+                          [evaluationId]="evaluationId"
+                          [companyId]="companyId"
+                          [userId]="userId"
+                        ></app-editable-table>
+                      }
+                    }
                   }
                 </div>
               }

@@ -11,7 +11,40 @@ export type FormFieldType =
   | 'textarea'
   | 'select'
   | 'checkbox'
-  | 'date';
+  | 'date'
+  | 'table';
+
+/**
+ * Configuración de columna para tablas editables
+ */
+export interface TableColumnConfig {
+  name: string;
+  label: string;
+  type: 'text' | 'number' | 'select' | 'checkbox' | 'textarea';
+  width?: string;
+  placeholder?: string;
+  required?: boolean;
+  options?: SelectOption[];
+  min?: number;
+  max?: number;
+  /** Si es true, esta columna se muestra en la tabla resumen */
+  showInTable?: boolean;
+}
+
+/**
+ * Configuración para campos de tipo tabla editable
+ */
+export interface EditableTableConfig {
+  columns: TableColumnConfig[];
+  minRows?: number;
+  maxRows?: number;
+  allowAddRow?: boolean;
+  allowDeleteRow?: boolean;
+  showRowNumbers?: boolean;
+  defaultRows?: number;
+  /** Usar modal para edición en lugar de edición inline */
+  useModal?: boolean;
+}
 
 export interface FormFieldConfig {
   name: string;
@@ -47,6 +80,9 @@ export interface FormFieldConfig {
   cols?: number;
   class?: string;
   group?: string;
+
+  /** Configuración para campos de tipo 'table' */
+  tableConfig?: EditableTableConfig;
 }
 
 export interface FormFieldGroup {

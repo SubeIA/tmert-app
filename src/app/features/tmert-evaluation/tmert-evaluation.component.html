@@ -8,10 +8,14 @@
     <app-form-stepper
       [config]="formConfig"
       [initialStep]="currentStepIndex()"
+      [enableTableChat]="true"
+      [evaluationId]="evaluationId() ?? ''"
+      [companyId]="companyId() ?? ''"
+      [userId]="userId"
       (formSubmit)="onFormSubmit($event)"
       (formCancel)="onFormCancel()"
       (stepChange)="onStepChange($event.stepIndex, $event.stepData)"
-      (saveProgress)="onStepChange($event.stepIndex, $event.stepData)"
+      (saveProgress)="onSaveProgress($event)"
     ></app-form-stepper>
   }
 

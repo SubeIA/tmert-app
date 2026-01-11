@@ -25,6 +25,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import {
   InputComponent,
   TextareaComponent,
@@ -32,6 +33,7 @@ import {
   CheckboxComponent,
   DatepickerComponent,
 } from '@shared/components/form-controls';
+import { EditableTableComponent } from '@shared/components/editable-table';
 import {
   FormFieldConfig,
   FormFieldGroup,
@@ -40,6 +42,10 @@ import {
 } from '@shared/models/form-field.model';
 import { COMMON_UI } from '@core/constants';
 import { Subscription } from 'rxjs';
+import {
+  ConfirmDialogComponent,
+  ConfirmDialogData,
+} from '@shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-form-stepper',
@@ -53,21 +59,32 @@ import { Subscription } from 'rxjs';
     MatCardModule,
     MatProgressSpinnerModule,
     MatTooltipModule,
+    MatDialogModule,
     InputComponent,
     TextareaComponent,
     SelectComponent,
     CheckboxComponent,
     DatepickerComponent,
+    EditableTableComponent,
   ],
   templateUrl: './form-stepper.component.html',
   styleUrl: './form-stepper.component.scss',
 })
 export class FormStepperComponent implements OnInit, OnChanges, OnDestroy {
   private fb = inject(FormBuilder);
+  private dialog = inject(MatDialog);
   private subscriptions: Subscription[] = [];
+  private previousStepIndex = 0;
 
   @Input() config!: FormStepperConfig;
   @Input() initialStep = 0;
+
+  /** Configuración para habilitar chat en las tablas editables */
+  @Input() enableTableChat = false;
+  @Input() evaluationId = '';
+  @Input() companyId = '';
+  @Input() userId = '';
+
   @Output() formSubmit = new EventEmitter<Record<string, unknown>>();
   @Output() formCancel = new EventEmitter<void>();
   @Output() stepChange = new EventEmitter<{
@@ -77,6 +94,7 @@ export class FormStepperComponent implements OnInit, OnChanges, OnDestroy {
   @Output() saveProgress = new EventEmitter<{
     stepIndex: number;
     stepData: Record<string, unknown>;
+    onComplete?: () => void;
   }>();
 
   readonly UI = COMMON_UI;
@@ -90,11 +108,15 @@ export class FormStepperComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit(): void {
     this.initializeForms();
+    this.previousStepIndex = this.initialStep;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['config'] && !changes['config'].firstChange) {
       this.initializeForms();
+    }
+    if (changes['initialStep']) {
+      this.previousStepIndex = this.initialStep;
     }
   }
 
@@ -203,16 +225,53 @@ export class FormStepperComponent implements OnInit, OnChanges, OnDestroy {
 
   onSubmit(): void {
     if (this.isFormValid()) {
-      this.isSubmitting = true;
-      const formData = this.getAllFormValues();
-      this.formSubmit.emit(formData);
+      const dialogData: ConfirmDialogData = {
+        title: 'Finalizar Evaluación',
+        message:
+          '¿Está seguro que desea finalizar la evaluación? Una vez finalizada, no podrá realizar más cambios.',
+        confirmText: 'Finalizar',
+        cancelText: 'Cancelar',
+        confirmColor: 'primary',
+      };
+
+      const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+        width: '450px',
+        data: dialogData,
+        disableClose: true,
+      });
+
+      dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+        if (confirmed) {
+          this.isSubmitting = true;
+          const formData = this.getAllFormValues();
+          this.formSubmit.emit(formData);
+        }
+      });
     } else {
       this.markAllStepsAsTouched();
     }
   }
 
   onCancel(): void {
-    this.formCancel.emit();
+    const dialogData: ConfirmDialogData = {
+      title: 'Salir de la Evaluación',
+      message: '¿Está seguro que desea salir? Los cambios no guardados se perderán.',
+      confirmText: 'Salir',
+      cancelText: 'Continuar editando',
+      confirmColor: 'warn',
+    };
+
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '450px',
+      data: dialogData,
+      disableClose: true,
+    });
+
+    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.formCancel.emit();
+      }
+    });
   }
 
   private isFormValid(): boolean {
@@ -259,11 +318,20 @@ export class FormStepperComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   /**
-   * Método llamado cuando el usuario avanza a otro step
+   * Método llamado cuando el usuario cambia de step (avanza o retrocede)
+   * Guarda automáticamente el progreso del step anterior
    */
-  onStepChange(stepIndex: number): void {
-    const stepData = this.stepForms[stepIndex]?.value || {};
-    this.stepChange.emit({ stepIndex, stepData });
+  onStepChange(newStepIndex: number): void {
+    // Guardar el progreso del step anterior antes de cambiar
+    const previousStepData = this.stepForms[this.previousStepIndex]?.value || {};
+    this.saveProgress.emit({ stepIndex: this.previousStepIndex, stepData: previousStepData });
+
+    // Emitir el cambio de step
+    const newStepData = this.stepForms[newStepIndex]?.value || {};
+    this.stepChange.emit({ stepIndex: newStepIndex, stepData: newStepData });
+
+    // Actualizar el índice del step anterior para el próximo cambio
+    this.previousStepIndex = newStepIndex;
   }
 
   /**
@@ -274,12 +342,22 @@ export class FormStepperComponent implements OnInit, OnChanges, OnDestroy {
     const stepData = this.stepForms[currentStepIndex]?.value || {};
 
     this.isSaving.set(true);
-    this.saveProgress.emit({ stepIndex: currentStepIndex, stepData });
 
-    // Simular delay para feedback visual
-    setTimeout(() => {
-      this.isSaving.set(false);
-    }, 1000);
+    // Emitir con callback para resetear el loading cuando termine
+    this.saveProgress.emit({
+      stepIndex: currentStepIndex,
+      stepData,
+      onComplete: () => {
+        this.isSaving.set(false);
+      },
+    });
+  }
+
+  /**
+   * Método público para resetear el estado de guardando
+   */
+  setSavingComplete(): void {
+    this.isSaving.set(false);
   }
 
   // Método de depuración para ver campos inválidos

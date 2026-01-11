@@ -4,6 +4,7 @@ export * from './form-stepper/form-stepper.component';
 export * from './chat-assistant/chat-assistant.component';
 export * from './floating-chat';
 export * from './data-table';
+export * from './editable-table';
 export * from './loading';
 export * from './table-skeleton';
 export * from './confirm-dialog/confirm-dialog.component';

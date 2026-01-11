@@ -72,10 +72,10 @@ export class TmertEvaluationComponent implements OnInit, AfterViewInit {
           ...step,
           fields:
             step.fields?.map(field => {
-              if (field.name === 'entidad_nombre') {
+              if (field.name === 'company_name') {
                 return { ...field, value: this.companyName(), readonly: true };
               }
-              if (field.name === 'entidad_rut') {
+              if (field.name === 'company_rut') {
                 return { ...field, value: this.companyRut(), readonly: true };
               }
               return field;
@@ -247,6 +247,26 @@ export class TmertEvaluationComponent implements OnInit, AfterViewInit {
       alert('Error al guardar la evaluación');
     } finally {
       this.loading.set(false);
+    }
+  }
+
+  /**
+   * Guardar el progreso del step actual (llamado desde botón Guardar Progreso)
+   */
+  async onSaveProgress(event: {
+    stepIndex: number;
+    stepData: Record<string, unknown>;
+    onComplete?: () => void;
+  }): Promise<void> {
+    const { stepIndex, stepData, onComplete } = event;
+
+    try {
+      await this.onStepChange(stepIndex, stepData);
+    } finally {
+      // Notificar que el guardado terminó
+      if (onComplete) {
+        onComplete();
+      }
     }
   }
 

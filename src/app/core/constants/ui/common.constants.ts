@@ -9,7 +9,7 @@ export const COMMON_UI = {
     CONFIRM: 'Confirmar',
     BACK: 'Volver',
     NEXT: 'Siguiente',
-    SUBMIT: 'Enviar',
+    SUBMIT: 'Finalizar',
     SEARCH: 'Buscar',
     FILTER: 'Filtrar',
     EXPORT: 'Exportar',
