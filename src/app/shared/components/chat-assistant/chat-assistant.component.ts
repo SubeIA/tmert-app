@@ -1,14 +1,5 @@
 /* eslint-disable no-console */
-import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  signal,
-  inject,
-  OnInit,
-  OnDestroy,
-} from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal, inject, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -48,7 +39,7 @@ export interface ChatMessage {
   templateUrl: './chat-assistant.component.html',
   styleUrl: './chat-assistant.component.scss',
 })
-export class ChatAssistantComponent implements OnInit, OnDestroy {
+export class ChatAssistantComponent implements OnDestroy {
   private readonly tmertService = inject(TmertService);
   private readonly destroy$ = new Subject<void>();
 
