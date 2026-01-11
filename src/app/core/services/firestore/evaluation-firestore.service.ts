@@ -65,6 +65,8 @@ export class EvaluationFirestoreService {
         evaluatorName: data['evaluatorName'],
         status: data['status'],
         progress: data['progress'],
+        currentStep: data['currentStep'],
+        stepsData: data['stepsData'],
         startDate: data['startDate']?.toDate(),
         completedDate: data['completedDate']?.toDate(),
         data: data['data'] || {},

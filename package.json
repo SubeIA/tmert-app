@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:prod": "node scripts/set-env.js && ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
@@ -12,7 +13,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "pre-commit": "npm run lint:fix && npm run format",
-    "prepare": "husky"
+    "prepare": "husky",
+    "set-env": "node scripts/set-env.js"
   },
   "lint-staged": {
     "*.{ts,js}": [

@@ -1,14 +1,30 @@
 <div class="tmert-evaluation-container">
-  <app-form-stepper
-    [config]="formConfig"
-    (formSubmit)="onFormSubmit($event)"
-    (formCancel)="onFormCancel()"
-  ></app-form-stepper>
+  @if (loading()) {
+    <div class="loading-container">
+      <mat-spinner></mat-spinner>
+      <p>Cargando evaluación...</p>
+    </div>
+  } @else if (dataLoaded()) {
+    <app-form-stepper
+      [config]="formConfig"
+      [initialStep]="currentStepIndex()"
+      (formSubmit)="onFormSubmit($event)"
+      (formCancel)="onFormCancel()"
+      (stepChange)="onStepChange($event.stepIndex, $event.stepData)"
+      (saveProgress)="onStepChange($event.stepIndex, $event.stepData)"
+    ></app-form-stepper>
+  }
 
-  <!-- Floating Chat Assistant -->
+  <!-- Floating Chat Assistant con integración TMERT API -->
   <app-floating-chat
     [title]="'Asistente TMERT'"
     [placeholder]="'Pregunta sobre la evaluación...'"
-    (sendMessage)="onChatMessage($event)"
+    [assistantId]="assistantId"
+    [userId]="userId"
+    [evaluationId]="evaluationId() ?? undefined"
+    [companyId]="companyId() ?? undefined"
+    (threadCreated)="onThreadCreated($event)"
+    (messageReceived)="onMessageReceived($event)"
+    (errorOccurred)="onChatError($event)"
   ></app-floating-chat>
 </div>

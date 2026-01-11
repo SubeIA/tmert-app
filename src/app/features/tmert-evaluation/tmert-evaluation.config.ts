@@ -23,10 +23,10 @@ export const TMERT_EVALUATION_CONFIG: FormStepperConfig = {
           name: 'entidad_rut',
           label: 'RUT de la empresa',
           type: 'text',
-          placeholder: 'Ej: 12.345.678-9',
+          placeholder: 'Ej: 76.123.456-7',
           hint: 'Formato: XX.XXX.XXX-X',
           required: true,
-          validators: [Validators.required, Validators.pattern(/^\d{1,2}\.\d{3}\.\d{3}-[\dkK]$/)],
+          validators: [Validators.required, Validators.pattern(/^\d{1,3}\.\d{3}\.\d{3}-[\dkK]$/)],
           cols: 4,
         },
         {

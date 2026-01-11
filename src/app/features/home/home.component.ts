@@ -49,13 +49,13 @@ import { Company } from '@core/models/company.model';
                 <div class="stat-icon">
                   <mat-icon>assignment</mat-icon>
                 </div>
+                <div class="stat-content">
+                  <h3>{{ totalEvaluations() }}</h3>
+                  <p>Evaluaciones Totales</p>
+                </div>
                 <span class="stat-trend positive">
                   <mat-icon>trending_up</mat-icon>
                 </span>
-              </div>
-              <div class="stat-content">
-                <h3>{{ totalEvaluations() }}</h3>
-                <p>Evaluaciones Totales</p>
               </div>
               <div class="stat-footer">
                 <span class="stat-detail">Total acumulado</span>
@@ -67,13 +67,13 @@ import { Company } from '@core/models/company.model';
                 <div class="stat-icon">
                   <mat-icon>pending_actions</mat-icon>
                 </div>
+                <div class="stat-content">
+                  <h3>{{ inProgressEvaluations() }}</h3>
+                  <p>En Progreso</p>
+                </div>
                 <span class="stat-trend">
                   <mat-icon>schedule</mat-icon>
                 </span>
-              </div>
-              <div class="stat-content">
-                <h3>{{ inProgressEvaluations() }}</h3>
-                <p>En Progreso</p>
               </div>
               <div class="stat-footer">
                 <span class="stat-detail">Requieren atención</span>
@@ -85,13 +85,13 @@ import { Company } from '@core/models/company.model';
                 <div class="stat-icon">
                   <mat-icon>check_circle</mat-icon>
                 </div>
+                <div class="stat-content">
+                  <h3>{{ completedEvaluations() }}</h3>
+                  <p>Completadas</p>
+                </div>
                 <span class="stat-trend positive">
                   <mat-icon>done_all</mat-icon>
                 </span>
-              </div>
-              <div class="stat-content">
-                <h3>{{ completedEvaluations() }}</h3>
-                <p>Completadas</p>
               </div>
               <div class="stat-footer">
                 <span class="stat-detail">Finalizadas con éxito</span>
@@ -103,13 +103,13 @@ import { Company } from '@core/models/company.model';
                 <div class="stat-icon">
                   <mat-icon>business</mat-icon>
                 </div>
+                <div class="stat-content">
+                  <h3>{{ totalCompanies() }}</h3>
+                  <p>Empresas {{ isAdmin() ? 'Registradas' : 'Asignadas' }}</p>
+                </div>
                 <span class="stat-trend">
                   <mat-icon>business_center</mat-icon>
                 </span>
-              </div>
-              <div class="stat-content">
-                <h3>{{ totalCompanies() }}</h3>
-                <p>Empresas {{ isAdmin() ? 'Registradas' : 'Asignadas' }}</p>
               </div>
               <div class="stat-footer">
                 <span class="stat-detail">En base de datos</span>
@@ -343,7 +343,7 @@ import { Company } from '@core/models/company.model';
 
       .stat-card {
         position: relative;
-        padding: 1.75rem;
+        padding: 1.25rem 1.5rem;
         border-radius: 16px;
         box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -389,23 +389,24 @@ import { Company } from '@core/models/company.model';
 
         .stat-header {
           display: flex;
-          justify-content: space-between;
           align-items: center;
-          margin-bottom: 1rem;
+          gap: 0;
+          margin-bottom: 0;
+          width: 100%;
 
           .stat-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: 14px;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             background: rgba(99, 102, 241, 0.1);
 
             mat-icon {
-              font-size: 28px;
-              width: 28px;
-              height: 28px;
+              font-size: 24px;
+              width: 24px;
+              height: 24px;
               color: #6366f1;
             }
           }
@@ -418,9 +419,9 @@ import { Company } from '@core/models/company.model';
             color: #666;
 
             mat-icon {
-              font-size: 18px;
-              width: 18px;
-              height: 18px;
+              font-size: 16px;
+              width: 16px;
+              height: 16px;
             }
 
             &.positive {
@@ -451,9 +452,15 @@ import { Company } from '@core/models/company.model';
         }
 
         .stat-content {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          padding-left: 1rem;
+
           h3 {
             margin: 0;
-            font-size: 2.25rem;
+            font-size: 2rem;
             font-weight: 700;
             color: #1a1a1a;
             line-height: 1;
@@ -461,21 +468,25 @@ import { Company } from '@core/models/company.model';
           }
 
           p {
-            margin: 10px 0 0;
-            font-size: 0.9375rem;
+            margin: 0;
+            font-size: 0.875rem;
             color: #666;
             font-weight: 600;
             letter-spacing: -0.01em;
+            flex: 1;
           }
         }
 
         .stat-footer {
-          margin-top: 1rem;
-          padding-top: 1rem;
-          border-top: 1px solid rgba(0, 0, 0, 0.06);
+          position: absolute;
+          bottom: 0.75rem;
+          right: 1rem;
+          margin: 0;
+          padding: 0;
+          border: none;
 
           .stat-detail {
-            font-size: 0.8125rem;
+            font-size: 0.75rem;
             color: #999;
             font-weight: 500;
           }
@@ -497,8 +508,8 @@ import { Company } from '@core/models/company.model';
         position: relative;
         display: flex;
         align-items: center;
-        gap: 1.25rem;
-        padding: 1.75rem;
+        gap: 1rem;
+        padding: 1.25rem 1.5rem;
         border-radius: 16px;
         box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
         cursor: pointer;
@@ -542,9 +553,9 @@ import { Company } from '@core/models/company.model';
         }
 
         .card-icon {
-          width: 64px;
-          height: 64px;
-          border-radius: 14px;
+          width: 52px;
+          height: 52px;
+          border-radius: 12px;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -552,9 +563,9 @@ import { Company } from '@core/models/company.model';
           background: rgba(99, 102, 241, 0.1);
 
           mat-icon {
-            font-size: 32px;
-            width: 32px;
-            height: 32px;
+            font-size: 28px;
+            width: 28px;
+            height: 28px;
             color: #6366f1;
           }
         }
@@ -577,8 +588,8 @@ import { Company } from '@core/models/company.model';
           flex: 1;
 
           h3 {
-            margin: 0 0 6px;
-            font-size: 1.125rem;
+            margin: 0 0 4px;
+            font-size: 1.0625rem;
             font-weight: 600;
             color: #1a1a1a;
             letter-spacing: -0.01em;
@@ -586,7 +597,7 @@ import { Company } from '@core/models/company.model';
 
           p {
             margin: 0;
-            font-size: 0.875rem;
+            font-size: 0.8125rem;
             color: #666;
             font-weight: 400;
           }

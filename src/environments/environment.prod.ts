@@ -1,6 +1,7 @@
 export const environment = {
   production: true,
   apiUrl: 'https://api.production.com/api',
+  tmertApiUrl: 'https://tmert-api.production.com',
   appName: 'TMERT App',
   version: '1.0.0',
   firebase: {

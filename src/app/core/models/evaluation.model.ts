@@ -6,6 +6,8 @@ export interface TmertEvaluation {
   evaluatorName: string;
   status: EvaluationStatus;
   progress: number;
+  currentStep?: number;
+  stepsData?: Record<string, Record<string, unknown>>;
   startDate?: Date;
   completedDate?: Date;
   data?: Record<string, unknown>;

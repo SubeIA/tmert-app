@@ -6,4 +6,24 @@
   @media (max-width: 768px) {
     padding: 0;
   }
+
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    gap: 24px;
+
+    mat-spinner {
+      margin: 0 auto;
+    }
+
+    p {
+      font-size: 1rem;
+      color: #64748b;
+      margin: 0;
+      font-weight: 500;
+    }
+  }
 }

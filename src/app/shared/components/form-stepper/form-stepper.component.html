@@ -9,6 +9,8 @@
     <mat-stepper
       [linear]="config.linear !== false"
       [orientation]="config.orientation || 'horizontal'"
+      [selectedIndex]="initialStep"
+      (selectionChange)="onStepChange($event.selectedIndex)"
       #stepper
     >
       @for (step of config.steps; track step.label; let stepIndex = $index) {
@@ -29,6 +31,36 @@
             <p class="step-description">{{ step.description }}</p>
           }
 
+          <!-- Debug info -->
+          <div
+            class="debug-info"
+            style="
+              background: #f0f0f0;
+              padding: 8px;
+              margin-bottom: 16px;
+              border-radius: 4px;
+              font-size: 12px;
+            "
+          >
+            <strong>Estado del formulario:</strong>
+            <span [style.color]="stepForms[stepIndex].valid ? 'green' : 'red'">
+              {{ stepForms[stepIndex].valid ? '✓ Válido' : '✗ Inválido' }}
+            </span>
+            @if (!stepForms[stepIndex].valid) {
+              <div style="margin-top: 4px">
+                <strong>Campos inválidos:</strong> {{ getInvalidFields(stepIndex).join(', ') }}
+              </div>
+            }
+            <button
+              type="button"
+              mat-button
+              (click)="logFormStatus(stepIndex)"
+              style="font-size: 11px; padding: 4px 8px"
+            >
+              Ver detalles en consola
+            </button>
+          </div>
+
           <form [formGroup]="stepForms[stepIndex]" class="step-form">
             <div class="form-grid">
               @for (field of step.fields; track field.name) {
@@ -41,7 +73,6 @@
                         type="text"
                         [formControlName]="field.name"
                         [required]="field.required || false"
-                        [disabled]="field.disabled || false"
                         [readonly]="field.readonly || false"
                         [prefixIcon]="field.prefixIcon || ''"
                         [suffixIcon]="field.suffixIcon || ''"
@@ -56,7 +87,6 @@
                         type="email"
                         [formControlName]="field.name"
                         [required]="field.required || false"
-                        [disabled]="field.disabled || false"
                         [readonly]="field.readonly || false"
                         [prefixIcon]="field.prefixIcon || ''"
                         [suffixIcon]="field.suffixIcon || ''"
@@ -71,7 +101,6 @@
                         type="password"
                         [formControlName]="field.name"
                         [required]="field.required || false"
-                        [disabled]="field.disabled || false"
                         [readonly]="field.readonly || false"
                         [prefixIcon]="field.prefixIcon || ''"
                         [hint]="field.hint || ''"
@@ -85,7 +114,6 @@
                         type="number"
                         [formControlName]="field.name"
                         [required]="field.required || false"
-                        [disabled]="field.disabled || false"
                         [readonly]="field.readonly || false"
                         [prefixIcon]="field.prefixIcon || ''"
                         [suffixIcon]="field.suffixIcon || ''"
@@ -102,7 +130,6 @@
                         type="tel"
                         [formControlName]="field.name"
                         [required]="field.required || false"
-                        [disabled]="field.disabled || false"
                         [readonly]="field.readonly || false"
                         [prefixIcon]="field.prefixIcon || ''"
                         [suffixIcon]="field.suffixIcon || ''"
@@ -117,7 +144,6 @@
                         type="url"
                         [formControlName]="field.name"
                         [required]="field.required || false"
-                        [disabled]="field.disabled || false"
                         [readonly]="field.readonly || false"
                         [prefixIcon]="field.prefixIcon || ''"
                         [suffixIcon]="field.suffixIcon || ''"
@@ -131,7 +157,6 @@
                         [placeholder]="field.placeholder || ''"
                         [formControlName]="field.name"
                         [required]="field.required || false"
-                        [disabled]="field.disabled || false"
                         [readonly]="field.readonly || false"
                         [hint]="field.hint || ''"
                         [rows]="field.rows || 4"
@@ -144,7 +169,6 @@
                         [placeholder]="field.placeholder || ''"
                         [formControlName]="field.name"
                         [required]="field.required || false"
-                        [disabled]="field.disabled || false"
                         [hint]="field.hint || ''"
                         [options]="field.options || []"
                         [multiple]="field.multiple || false"
@@ -156,7 +180,6 @@
                         [label]="field.label"
                         [formControlName]="field.name"
                         [required]="field.required || false"
-                        [disabled]="field.disabled || false"
                         [labelPosition]="field.labelPosition || 'after'"
                         [color]="field.color || 'primary'"
                       ></app-checkbox>
@@ -167,7 +190,6 @@
                         [placeholder]="field.placeholder || ''"
                         [formControlName]="field.name"
                         [required]="field.required || false"
-                        [disabled]="field.disabled || false"
                         [hint]="field.hint || ''"
                         [minDate]="field.minDate"
                         [maxDate]="field.maxDate"
@@ -185,13 +207,37 @@
                   {{ cancelButtonText }}
                 </button>
               </div>
+              <div class="center-actions">
+                <button
+                  mat-stroked-button
+                  color="accent"
+                  type="button"
+                  (click)="onSaveProgress(stepper)"
+                  [disabled]="isSaving()"
+                >
+                  @if (isSaving()) {
+                    <mat-icon>
+                      <mat-spinner diameter="16"></mat-spinner>
+                    </mat-icon>
+                  } @else {
+                    <mat-icon>save</mat-icon>
+                  }
+                  {{ isSaving() ? 'Guardando...' : 'Guardar Progreso' }}
+                </button>
+              </div>
               <div class="right-actions">
                 <button mat-stroked-button type="button" matStepperPrevious *ngIf="stepIndex > 0">
                   <mat-icon>arrow_back</mat-icon>
                   {{ previousButtonText }}
                 </button>
                 @if (stepIndex < config.steps.length - 1) {
-                  <button mat-raised-button color="primary" type="button" matStepperNext>
+                  <button
+                    mat-raised-button
+                    color="primary"
+                    type="button"
+                    matStepperNext
+                    [disabled]="!stepForms[stepIndex].valid"
+                  >
                     {{ nextButtonText }}
                     <mat-icon>arrow_forward</mat-icon>
                   </button>

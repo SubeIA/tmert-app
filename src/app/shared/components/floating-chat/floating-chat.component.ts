@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatBadgeModule } from '@angular/material/badge';
-import { ChatAssistantComponent } from '../chat-assistant/chat-assistant.component';
+import { ChatAssistantComponent, ChatMessage } from '../chat-assistant/chat-assistant.component';
 
 @Component({
   selector: 'app-floating-chat',
@@ -16,8 +16,13 @@ import { ChatAssistantComponent } from '../chat-assistant/chat-assistant.compone
           <app-chat-assistant
             [title]="title"
             [placeholder]="placeholder"
-            (sendMessage)="onSendMessage($event)"
-            (clearChat)="onClearChat()"
+            [assistantId]="assistantId"
+            [userId]="userId"
+            [evaluationId]="evaluationId"
+            [companyId]="companyId"
+            (threadCreated)="onThreadCreated($event)"
+            (messageReceived)="onMessageReceived($event)"
+            (errorOccurred)="onErrorOccurred($event)"
           ></app-chat-assistant>
         </div>
       }
@@ -28,13 +33,14 @@ import { ChatAssistantComponent } from '../chat-assistant/chat-assistant.compone
         [class.open]="isOpen()"
         (click)="toggleChat()"
         color="primary"
+        [matBadge]="unreadCount()"
+        [matBadgeHidden]="unreadCount() === 0 || isOpen()"
+        matBadgePosition="above before"
       >
         @if (isOpen()) {
           <mat-icon>close</mat-icon>
         } @else {
-          <mat-icon [matBadge]="unreadCount()" [matBadgeHidden]="unreadCount() === 0"
-            >chat</mat-icon
-          >
+          <mat-icon>chat</mat-icon>
         }
       </button>
     </div>
@@ -170,7 +176,14 @@ export class FloatingChatComponent {
 
   @Input() title = 'Asistente TMERT';
   @Input() placeholder = 'Escribe tu pregunta...';
-  @Output() sendMessage = new EventEmitter<string>();
+  @Input() assistantId = 'asst_YOUR_ASSISTANT_ID'; // ID del asistente TMERT
+  @Input() userId?: string; // ID del usuario actual
+  @Input() evaluationId?: string; // ID de la evaluación
+  @Input() companyId?: string; // ID de la empresa
+
+  @Output() threadCreated = new EventEmitter<string>();
+  @Output() messageReceived = new EventEmitter<ChatMessage>();
+  @Output() errorOccurred = new EventEmitter<string>();
 
   isOpen = signal(false);
   unreadCount = signal(0);
@@ -182,14 +195,24 @@ export class FloatingChatComponent {
     }
   }
 
-  onSendMessage(message: string): void {
-    this.sendMessage.emit(message);
+  onThreadCreated(threadId: string): void {
+    this.threadCreated.emit(threadId);
   }
 
-  onClearChat(): void {
-    // Limpiar chat si es necesario
+  onMessageReceived(message: ChatMessage): void {
+    this.messageReceived.emit(message);
+    if (!this.isOpen()) {
+      this.unreadCount.update(count => count + 1);
+    }
   }
 
+  onErrorOccurred(error: string): void {
+    this.errorOccurred.emit(error);
+  }
+
+  /**
+   * @deprecated Método legacy - el componente ahora gestiona mensajes internamente
+   */
   addAssistantMessage(content: string): void {
     this.chatAssistant?.addAssistantMessage(content);
     if (!this.isOpen()) {
@@ -197,6 +220,9 @@ export class FloatingChatComponent {
     }
   }
 
+  /**
+   * @deprecated Método legacy - el componente ahora gestiona el loading internamente
+   */
   setLoading(loading: boolean): void {
     this.chatAssistant?.setLoading(loading);
   }

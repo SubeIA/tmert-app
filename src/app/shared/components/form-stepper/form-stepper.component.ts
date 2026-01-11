@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import {
   Component,
   Input,
@@ -5,8 +6,10 @@ import {
   EventEmitter,
   OnInit,
   OnChanges,
+  OnDestroy,
   SimpleChanges,
   inject,
+  signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -36,6 +39,7 @@ import {
   FormStepperConfig,
 } from '@shared/models/form-field.model';
 import { COMMON_UI } from '@core/constants';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-form-stepper',
@@ -58,17 +62,31 @@ import { COMMON_UI } from '@core/constants';
   templateUrl: './form-stepper.component.html',
   styleUrl: './form-stepper.component.scss',
 })
-export class FormStepperComponent implements OnInit, OnChanges {
+export class FormStepperComponent implements OnInit, OnChanges, OnDestroy {
   private fb = inject(FormBuilder);
+  private subscriptions: Subscription[] = [];
 
   @Input() config!: FormStepperConfig;
+  @Input() initialStep = 0;
   @Output() formSubmit = new EventEmitter<Record<string, unknown>>();
   @Output() formCancel = new EventEmitter<void>();
+  @Output() stepChange = new EventEmitter<{
+    stepIndex: number;
+    stepData: Record<string, unknown>;
+  }>();
+  @Output() saveProgress = new EventEmitter<{
+    stepIndex: number;
+    stepData: Record<string, unknown>;
+  }>();
 
   readonly UI = COMMON_UI;
 
   stepForms: FormGroup[] = [];
   isSubmitting = false;
+  isSaving = signal(false);
+
+  // Signal para forzar actualización del template
+  formStatusUpdate = signal(0);
 
   ngOnInit(): void {
     this.initializeForms();
@@ -80,14 +98,35 @@ export class FormStepperComponent implements OnInit, OnChanges {
     }
   }
 
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
   private initializeForms(): void {
     if (!this.config || !this.config.steps) {
       throw new Error('FormStepperComponent requires a valid config with steps');
     }
 
+    // Limpiar suscripciones anteriores
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.subscriptions = [];
+
     this.stepForms = this.config.steps.map(step => {
       const allFields = this.getAllFieldsFromStep(step);
-      return this.createFormGroup(allFields);
+      const formGroup = this.createFormGroup(allFields);
+
+      // Suscribirse a cambios del formulario para actualizar el template
+      const subscription = formGroup.valueChanges.subscribe(() => {
+        this.formStatusUpdate.set(this.formStatusUpdate() + 1);
+      });
+
+      const statusSubscription = formGroup.statusChanges.subscribe(() => {
+        this.formStatusUpdate.set(this.formStatusUpdate() + 1);
+      });
+
+      this.subscriptions.push(subscription, statusSubscription);
+
+      return formGroup;
     });
   }
 
@@ -217,5 +256,68 @@ export class FormStepperComponent implements OnInit, OnChanges {
 
   get previousButtonText(): string {
     return this.config.previousButtonText || this.UI.ACTIONS.BACK;
+  }
+
+  /**
+   * Método llamado cuando el usuario avanza a otro step
+   */
+  onStepChange(stepIndex: number): void {
+    const stepData = this.stepForms[stepIndex]?.value || {};
+    this.stepChange.emit({ stepIndex, stepData });
+  }
+
+  /**
+   * Método para guardar el progreso del step actual sin cambiar de step
+   */
+  async onSaveProgress(stepper: { selectedIndex: number }): Promise<void> {
+    const currentStepIndex = stepper.selectedIndex;
+    const stepData = this.stepForms[currentStepIndex]?.value || {};
+
+    this.isSaving.set(true);
+    this.saveProgress.emit({ stepIndex: currentStepIndex, stepData });
+
+    // Simular delay para feedback visual
+    setTimeout(() => {
+      this.isSaving.set(false);
+    }, 1000);
+  }
+
+  // Método de depuración para ver campos inválidos
+  getInvalidFields(stepIndex: number): string[] {
+    const form = this.stepForms[stepIndex];
+    const invalidFields: string[] = [];
+
+    Object.keys(form.controls).forEach(key => {
+      const control = form.get(key);
+      if (control && control.invalid) {
+        invalidFields.push(key);
+      }
+    });
+
+    return invalidFields;
+  }
+
+  // Método de depuración para ver el estado del formulario
+  logFormStatus(stepIndex: number): void {
+    const form = this.stepForms[stepIndex];
+    console.log('=== FORM DEBUG ===');
+    console.log('Step:', this.config.steps[stepIndex].label);
+    console.log('Form Valid:', form.valid);
+    console.log('Form Status:', form.status);
+    console.log('Form Value:', form.value);
+
+    Object.keys(form.controls).forEach(key => {
+      const control = form.get(key);
+      if (control) {
+        console.log(`Field: ${key}`, {
+          value: control.value,
+          valid: control.valid,
+          errors: control.errors,
+          touched: control.touched,
+          dirty: control.dirty,
+        });
+      }
+    });
+    console.log('==================');
   }
 }
