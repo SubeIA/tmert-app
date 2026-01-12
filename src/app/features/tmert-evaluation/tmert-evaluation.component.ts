@@ -51,7 +51,7 @@ export class TmertEvaluationComponent implements OnInit, AfterViewInit {
   private _formConfig: FormStepperConfig | null = null;
 
   // ID del asistente TMERT
-  assistantId = 'asst_kjBvmTZ8kExCghMS2wCofhxx';
+  assistantId = 'asst_gevN5Iyn3hyK0sBC0mBC3CG4';
 
   // ID del usuario actual desde el servicio de autenticación
   get userId(): string {
