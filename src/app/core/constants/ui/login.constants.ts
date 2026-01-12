@@ -4,7 +4,7 @@ export const LOGIN_UI = {
     SUFFIX: 'SUBEIA',
   },
   HEADER: {
-    TITLE: 'Bienvenido a TMERTA',
+    TITLE: 'Bienvenido a TMERT',
     SUBTITLE: 'Tu asistente inteligente para TMERT',
   },
   FORM: {
