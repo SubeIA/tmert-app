@@ -324,7 +324,17 @@ export class FormStepperComponent implements OnInit, OnChanges, OnDestroy {
   onStepChange(newStepIndex: number): void {
     // Guardar el progreso del step anterior antes de cambiar
     const previousStepData = this.stepForms[this.previousStepIndex]?.value || {};
-    this.saveProgress.emit({ stepIndex: this.previousStepIndex, stepData: previousStepData });
+
+    // Activar loading mientras se guarda
+    this.isSaving.set(true);
+
+    this.saveProgress.emit({
+      stepIndex: this.previousStepIndex,
+      stepData: previousStepData,
+      onComplete: () => {
+        this.isSaving.set(false);
+      },
+    });
 
     // Emitir el cambio de step
     const newStepData = this.stepForms[newStepIndex]?.value || {};

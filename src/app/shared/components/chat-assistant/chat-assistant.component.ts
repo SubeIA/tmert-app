@@ -8,6 +8,9 @@ import {
   inject,
   OnDestroy,
   OnInit,
+  ViewChild,
+  ElementRef,
+  AfterViewChecked,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -48,9 +51,12 @@ export interface ChatMessage {
   templateUrl: './chat-assistant.component.html',
   styleUrl: './chat-assistant.component.scss',
 })
-export class ChatAssistantComponent implements OnInit, OnDestroy {
+export class ChatAssistantComponent implements OnInit, OnDestroy, AfterViewChecked {
   private readonly tmertService = inject(TmertService);
   private readonly destroy$ = new Subject<void>();
+  private shouldScrollToBottom = false;
+
+  @ViewChild('messagesContainer') private messagesContainer!: ElementRef<HTMLDivElement>;
 
   @Input() title = 'Asistente TMERT';
   @Input() placeholder = 'Escribe tu pregunta...';
@@ -67,6 +73,7 @@ export class ChatAssistantComponent implements OnInit, OnDestroy {
 
   messages = signal<ChatMessage[]>([]);
   isLoading = signal(false);
+  isLoadingHistory = signal(false);
   inputMessage = '';
   threadId = signal<string | null>(null);
   error = signal<string | null>(null);
@@ -80,9 +87,37 @@ export class ChatAssistantComponent implements OnInit, OnDestroy {
     }
   }
 
+  ngAfterViewChecked(): void {
+    if (this.shouldScrollToBottom) {
+      this.scrollToBottom();
+      this.shouldScrollToBottom = false;
+    }
+  }
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  /**
+   * Hace scroll al final del contenedor de mensajes
+   */
+  private scrollToBottom(): void {
+    try {
+      if (this.messagesContainer?.nativeElement) {
+        const container = this.messagesContainer.nativeElement;
+        container.scrollTop = container.scrollHeight;
+      }
+    } catch (err) {
+      console.warn('Error al hacer scroll:', err);
+    }
+  }
+
+  /**
+   * Marca que se debe hacer scroll al final
+   */
+  private triggerScrollToBottom(): void {
+    this.shouldScrollToBottom = true;
   }
 
   /**
@@ -135,30 +170,48 @@ export class ChatAssistantComponent implements OnInit, OnDestroy {
     const currentThreadId = this.threadId();
     if (!currentThreadId) return;
 
-    this.isLoading.set(true);
+    this.isLoadingHistory.set(true);
 
     this.tmertService
       .listMessages(currentThreadId, 50, 'asc')
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: response => {
-          const loadedMessages: ChatMessage[] = response.messages.map(msg => ({
-            id: msg.id,
-            role: msg.role,
-            content: msg.content,
-            timestamp: new Date(msg.created_at),
-          }));
+          console.log('Respuesta de mensajes:', response);
+          const loadedMessages: ChatMessage[] = response.messages
+            .filter(msg => msg.content && msg.content.trim() !== '') // Filtrar mensajes vacíos
+            .map(msg => ({
+              id: msg.id,
+              role: msg.role,
+              content: msg.content,
+              timestamp: this.parseTimestamp(msg.created_at),
+            }));
 
           this.messages.set(loadedMessages);
-          this.isLoading.set(false);
+          this.isLoadingHistory.set(false);
+          this.triggerScrollToBottom();
           console.log(`Cargados ${loadedMessages.length} mensajes del thread`);
         },
         error: err => {
           console.warn('No se pudieron cargar mensajes anteriores:', err.message);
-          this.isLoading.set(false);
+          this.isLoadingHistory.set(false);
           // No mostrar error, simplemente continuar sin mensajes previos
         },
       });
+  }
+
+  /**
+   * Parsea el timestamp del backend a Date
+   * El backend envía timestamps en segundos como string
+   */
+  private parseTimestamp(timestamp: string | number): Date {
+    const ts = typeof timestamp === 'string' ? parseInt(timestamp, 10) : timestamp;
+    // Si el timestamp es en segundos (menos de 10 dígitos típicamente indica segundos)
+    // lo convertimos a milisegundos
+    if (ts < 10000000000) {
+      return new Date(ts * 1000);
+    }
+    return new Date(ts);
   }
 
   /**
@@ -205,6 +258,7 @@ export class ChatAssistantComponent implements OnInit, OnDestroy {
     this.inputMessage = '';
     this.isLoading.set(true);
     this.error.set(null);
+    this.triggerScrollToBottom();
 
     // Enviar mensaje usando el servicio TMERT
     this.tmertService
@@ -227,6 +281,7 @@ export class ChatAssistantComponent implements OnInit, OnDestroy {
 
             this.messages.update(msgs => [...msgs, assistantMessage]);
             this.messageReceived.emit(assistantMessage);
+            this.triggerScrollToBottom();
           } else if (response.error) {
             const errorMsg = 'Error del asistente: ' + response.error;
             this.error.set(errorMsg);
@@ -303,5 +358,72 @@ export class ChatAssistantComponent implements OnInit, OnDestroy {
   onSuggestionClick(suggestion: string): void {
     this.inputMessage = suggestion;
     this.onSendMessage();
+  }
+
+  /**
+   * Formatea el contenido del mensaje para mostrar markdown básico como HTML
+   */
+  formatMessage(content: string): string {
+    if (!content) return '';
+
+    let formatted = content;
+
+    // Escapar HTML para seguridad
+    formatted = formatted.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+    // Bloques de código (```)
+    formatted = formatted.replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>');
+
+    // Código inline (`)
+    formatted = formatted.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+    // Headers (### ## #)
+    formatted = formatted.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+    formatted = formatted.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+    formatted = formatted.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+
+    // Bold (**text** o __text__)
+    formatted = formatted.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    formatted = formatted.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+
+    // Italic (*text* o _text_)
+    formatted = formatted.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+    formatted = formatted.replace(/_([^_]+)_/g, '<em>$1</em>');
+
+    // Listas no ordenadas (- item o * item)
+    formatted = formatted.replace(/^[-*] (.+)$/gm, '<li>$1</li>');
+    formatted = formatted.replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>');
+
+    // Listas ordenadas (1. item)
+    formatted = formatted.replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
+
+    // Blockquotes (> text)
+    formatted = formatted.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
+
+    // Links [text](url)
+    formatted = formatted.replace(
+      /\[([^\]]+)\]\(([^)]+)\)/g,
+      '<a href="$2" target="_blank" rel="noopener">$1</a>'
+    );
+
+    // Horizontal rules (---)
+    formatted = formatted.replace(/^---$/gm, '<hr>');
+
+    // Convertir doble salto de línea en párrafos
+    formatted = formatted.replace(/\n\n/g, '</p><p>');
+
+    // Convertir saltos de línea simples en <br> (excepto dentro de listas/pre)
+    formatted = formatted.replace(/\n/g, '<br>');
+
+    // Limpiar <br> innecesarios después de elementos de bloque
+    formatted = formatted.replace(/<\/li><br>/g, '</li>');
+    formatted = formatted.replace(/<\/ul><br>/g, '</ul>');
+    formatted = formatted.replace(/<\/ol><br>/g, '</ol>');
+    formatted = formatted.replace(/<\/pre><br>/g, '</pre>');
+    formatted = formatted.replace(/<\/h[1-6]><br>/g, match => match.replace('<br>', ''));
+    formatted = formatted.replace(/<\/blockquote><br>/g, '</blockquote>');
+    formatted = formatted.replace(/<hr><br>/g, '<hr>');
+
+    return formatted;
   }
 }

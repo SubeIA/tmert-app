@@ -4,6 +4,7 @@
 }
 
 .stepper-card {
+  position: relative;
   background: white;
   border-radius: 16px;
   box-shadow:
@@ -434,4 +435,56 @@ mat-card-actions {
   background-size: 200% 100%;
   animation: shimmer 1.2s infinite;
   border-radius: 6px;
+}
+
+// Overlay de loading mientras se guarda
+.saving-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  border-radius: 16px;
+  animation: fadeIn 0.2s ease;
+
+  .saving-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 32px;
+    background: white;
+    border-radius: 12px;
+    box-shadow:
+      0 10px 25px -5px rgba(0, 0, 0, 0.1),
+      0 8px 10px -6px rgba(0, 0, 0, 0.08);
+  }
+
+  .saving-text {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #6366f1;
+    letter-spacing: -0.2px;
+  }
+
+  mat-spinner {
+    ::ng-deep circle {
+      stroke: #6366f1;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

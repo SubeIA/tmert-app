@@ -16,9 +16,11 @@
       <div class="header-actions">
         <button
           mat-icon-button
+          class="clear-chat-btn"
           (click)="onClearChat()"
-          matTooltip="Limpiar chat"
-          [disabled]="messages().length === 0"
+          matTooltip="Limpiar conversación"
+          matTooltipPosition="below"
+          [disabled]="messages().length === 0 || isLoading() || isLoadingHistory()"
         >
           <mat-icon>delete_outline</mat-icon>
         </button>
@@ -26,7 +28,12 @@
     </div>
 
     <div class="messages-container" #messagesContainer>
-      @if (messages().length === 0) {
+      @if (isLoadingHistory()) {
+        <div class="loading-history">
+          <mat-spinner diameter="32"></mat-spinner>
+          <span>Cargando historial...</span>
+        </div>
+      } @else if (messages().length === 0) {
         <div class="empty-state">
           <div class="empty-icon-wrapper">
             <mat-icon class="empty-icon">smart_toy</mat-icon>
@@ -63,19 +70,31 @@
           </div>
         </div>
       } @else {
-        @for (message of messages(); track message.id) {
+        @for (message of messages(); track message.id; let i = $index) {
           <div
             class="message"
             [class.user]="message.role === 'user'"
             [class.assistant]="message.role === 'assistant'"
+            [style.animation-delay]="i * 0.05 + 's'"
           >
             <div class="message-avatar">
               <mat-icon>{{ message.role === 'user' ? 'person' : 'smart_toy' }}</mat-icon>
             </div>
             <div class="message-content">
-              <div class="message-text">{{ message.content }}</div>
-              <div class="message-timestamp">
-                {{ message.timestamp | date: 'shortTime' }}
+              <div class="message-bubble">
+                @if (message.role === 'assistant') {
+                  <div class="message-text" [innerHTML]="formatMessage(message.content)"></div>
+                } @else {
+                  <div class="message-text">{{ message.content }}</div>
+                }
+              </div>
+              <div class="message-meta">
+                <span class="message-timestamp">
+                  {{ message.timestamp | date: 'shortTime' }}
+                </span>
+                @if (message.role === 'user') {
+                  <mat-icon class="sent-icon">done_all</mat-icon>
+                }
               </div>
             </div>
           </div>

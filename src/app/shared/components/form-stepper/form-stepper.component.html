@@ -1,4 +1,14 @@
 <mat-card class="stepper-card">
+  <!-- Overlay de loading mientras se guarda -->
+  @if (isSaving()) {
+    <div class="saving-overlay">
+      <div class="saving-content">
+        <mat-spinner diameter="48"></mat-spinner>
+        <span class="saving-text">Guardando progreso...</span>
+      </div>
+    </div>
+  }
+
   @if (config.title) {
     <mat-card-header>
       <mat-card-title>{{ config.title }}</mat-card-title>
