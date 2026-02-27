@@ -25,6 +25,7 @@ export class EvaluationFirestoreService {
 
   async createEvaluation(
     companyId: string,
+    centerId: string,
     companyName: string,
     evaluatorId: string,
     evaluatorName: string,
@@ -53,6 +54,7 @@ export class EvaluationFirestoreService {
     const evaluationData: Record<string, unknown> = {
       id: evalRef.id,
       companyId,
+      centerId,
       companyName,
       evaluatorId,
       evaluatorName,
@@ -82,6 +84,7 @@ export class EvaluationFirestoreService {
       return {
         id: evalSnap.id,
         companyId: data['companyId'],
+        centerId: data['centerId'],
         companyName: data['companyName'],
         evaluatorId: data['evaluatorId'],
         evaluatorName: data['evaluatorName'],
@@ -121,6 +124,7 @@ export class EvaluationFirestoreService {
         return {
           id: docSnap.id,
           companyId: data['companyId'],
+          centerId: data['centerId'],
           companyName: data['companyName'],
           evaluatorId: data['evaluatorId'],
           evaluatorName: data['evaluatorName'],

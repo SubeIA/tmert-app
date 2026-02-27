@@ -145,6 +145,7 @@ export class EvaluationsComponent implements OnInit {
     try {
       const evaluationId = await this.evaluationService.createEvaluation(
         company.id,
+        '', // centerId is not available from company list directly here
         company.name,
         user.id,
         user.name || user.email

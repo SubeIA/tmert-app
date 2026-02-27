@@ -192,3 +192,5 @@ export const deleteUser = onCall(async (request: CallableRequest<{ userId: strin
     throw new HttpsError('internal', error.message || 'Error al eliminar usuario');
   }
 });
+
+export * from './ai-assistant';

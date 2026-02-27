@@ -44,6 +44,8 @@ export interface EditableTableConfig {
   defaultRows?: number;
   /** Usar modal para edición en lugar de edición inline */
   useModal?: boolean;
+  /** Permitir adjuntar fotos/evidencia */
+  allowPhotos?: boolean;
 }
 
 export interface FormFieldConfig {

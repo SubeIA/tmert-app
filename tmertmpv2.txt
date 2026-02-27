@@ -1,0 +1,123 @@
+
+
+🏗️ Plan MVP - Asistente TMERT Digital
+
+Resumen del Proyecto
+Transformar la herramienta Excel de evaluación TMERT (ACHS) en una aplicación móvil híbrida con flujo guiado, validaciones en tiempo real y asistencia de IA. El objetivo es reducir tiempo de levantamiento en terreno, eliminar errores de digitación y generar planes de acción de forma consistente.
+
+---
+
+📱 Plataforma
+- Web responsive (mobile-first) + Capacitor para publicación en App Store y Google Play
+- Diseño optimizado para uso en terreno (botones grandes, formularios simples, contraste alto)
+- Soporte offline para captura de datos y sincronización posterior
+
+---
+
+👤 Gestión de Usuarios
+- Autenticación con email/contraseña usando Supabase Auth
+- Perfil básico: nombre, cargo, correo, empresa asociada
+- Gestión de evaluaciones por usuario (historial, borradores, completadas)
+
+---
+
+📋 Flujo de Evaluación (5 Etapas)
+
+Etapa 1: Antecedentes Generales
+- Datos de empresa (Razón Social, RUT, Actividad Económica, CIIU)
+- Centro de trabajo (Nombre, Dirección, Comuna, N° trabajadores)
+- Responsable de implementación (Nombre, Cargo, Contacto)
+- Catálogos predefinidos para rubros y comunas (evitar escritura libre)
+
+Etapa 2: Caracterización del Riesgo
+- Definir Área → Puesto → Tareas
+- Datos del puesto: descripción, horario, horas extras, N° trabajadores expuestos (H/M)
+- Tipo de contrato, remuneración, duración de tarea, pausas, rotación
+- Características del ambiente/espacio y herramientas utilizadas
+- Autocompletado con IA basado en rubro/histórico
+
+Etapa 3: Identificación Inicial
+- 7 preguntas de detección de factores de riesgo
+- MVP incluye solo 1 factor: Trabajo repetitivo de miembros superiores
+- Si respuesta = "NO" a todas → Sin riesgo (reevaluar en el tiempo)
+- Si respuesta = "SÍ" → Continuar a identificación avanzada
+
+Etapa 4: Identificación Avanzada (Factor: Trabajo Repetitivo)
+- Evaluación de condiciones aceptables y críticas
+- Preguntas específicas sobre frecuencia, duración, posturas
+- Sistema calcula automáticamente: Aceptable / No aceptable / Crítica
+- Alertas visuales cuando se detectan condiciones críticas
+- Detección de inconsistencias con IA ("esto no cuadra con lo declarado antes")
+
+Etapa 5: Plan de Acción
+- Consolidado de resultados por tarea evaluada
+- IA propone borrador de medidas (administrativas, ingeniería) basado en hallazgos
+- Usuario puede editar, agregar, eliminar medidas
+- Campos: Medida, Responsable, Fecha compromiso, Estado, Evidencia
+- Captura de fotos/archivos adjuntos como evidencia
+- Exportación a PDF / compartir
+
+---
+
+🤖 Funcionalidades de IA
+- Autocompletado inteligente: Sugiere datos basados en rubro y evaluaciones previas
+- Detección de inconsistencias: Alerta en tiempo real si hay contradicciones en las respuestas
+- Generación de plan de acción: Propone medidas específicas según factores y condiciones identificadas (siempre editables)
+
+---
+
+✅ Validaciones en Tiempo Real
+- Campos obligatorios destacados
+- Validación de formatos (RUT, email, fechas)
+- Alertas contextuales cuando datos no son coherentes
+- Indicador de progreso por etapa
+
+---
+
+💾 Persistencia y Trazabilidad
+- Guardado automático de borradores
+- Historial de cambios (quién, cuándo, qué)
+- Estados: Borrador → En progreso → Completada
+- Sincronización cuando hay conexión
+
+---
+
+📤 Entregables del MVP
+1. Flujo completo end-to-end para un puesto/tarea
+2. Plan de acción consolidado exportable (PDF)
+3. Resumen de evaluación para auditoría
+
+---
+
+🛠️ Stack Técnico
+- Frontend: React + TypeScript + Tailwind CSS
+- Mobile: Capacitor para compilación iOS/Android
+- Backend: Supabase (autenticación, base de datos, almacenamiento de archivos)
+- IA: Lovable AI (Gemini/GPT) para asistencia inteligente
+
+---
+
+📅 Fases de Implementación
+
+Fase 1- Base y autenticación
+- Estructura del proyecto con Capacitor
+- Login/registro de usuarios
+- Modelo de datos base (empresas, evaluaciones, tareas)
+
+Fase 2- Flujo de evaluación
+- Etapas 1-3 (Antecedentes → Caracterización → Identificación inicial)
+- Catálogos y validaciones
+
+Fase 3 - Identificación avanzada + IA
+- Etapa 4 con lógica de evaluación
+- Integración de IA para inconsistencias y sugerencias
+
+Fase 4 - Plan de acción y exportación
+- Etapa 5 completa
+- Captura de evidencia (fotos)
+- Generación de PDF
+
+Fase 5 - Offline y optimización
+- Soporte offline con sincronización
+- Optimización para terreno
+

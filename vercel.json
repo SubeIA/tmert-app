@@ -1,7 +1,6 @@
 {
   "version": 2,
   "public": true,
-  "dist": "browser",
   "rewrites": [
     {
       "source": "/(.*)",

@@ -8,7 +8,12 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideFirebaseApp, initializeApp, getApp } from '@angular/fire/app';
 import { provideAuth, getAuth } from '@angular/fire/auth';
-import { provideFirestore, initializeFirestore } from '@angular/fire/firestore';
+import {
+  provideFirestore,
+  initializeFirestore,
+  persistentLocalCache,
+  persistentMultipleTabManager,
+} from '@angular/fire/firestore';
 import { provideFunctions, getFunctions } from '@angular/fire/functions';
 
 import { routes } from './app.routes';
@@ -27,6 +32,9 @@ export const appConfig: ApplicationConfig = {
     provideFirestore(() => {
       const firestore = initializeFirestore(getApp(), {
         ignoreUndefinedProperties: true,
+        localCache: persistentLocalCache({
+          tabManager: persistentMultipleTabManager(),
+        }),
       });
       return firestore;
     }),

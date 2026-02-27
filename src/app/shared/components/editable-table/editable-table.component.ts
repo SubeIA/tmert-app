@@ -261,6 +261,7 @@ export class EditableTableComponent implements OnInit, OnDestroy, ControlValueAc
         companyId: this.companyId,
         userId: this.userId,
       },
+      allowPhotos: this.config.allowPhotos,
     };
 
     const dialogRef = this.dialog.open(RowEditDialogComponent, {
@@ -295,6 +296,7 @@ export class EditableTableComponent implements OnInit, OnDestroy, ControlValueAc
         companyId: this.companyId,
         userId: this.userId,
       },
+      allowPhotos: this.config.allowPhotos,
     };
 
     const dialogRef = this.dialog.open(RowEditDialogComponent, {

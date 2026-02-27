@@ -19,6 +19,8 @@ import { CompanyFirestoreService } from '@core/services/firestore/company-firest
 import { FormStepperConfig } from '@shared/models/form-field.model';
 import { ChatMessage } from '@shared/components/chat-assistant/chat-assistant.component';
 import { AuthService } from '@core/services/auth/auth.service';
+import { AiService } from '@core/services/ai/ai.service';
+import { ExportPdfService } from '@core/services/export/export-pdf.service';
 
 @Component({
   selector: 'app-tmert-evaluation',
@@ -33,6 +35,8 @@ export class TmertEvaluationComponent implements OnInit, AfterViewInit {
   private evaluationService = inject(EvaluationFirestoreService);
   private companyService = inject(CompanyFirestoreService);
   private authService = inject(AuthService);
+  private aiService = inject(AiService);
+  private pdfService = inject(ExportPdfService);
   private cdr = inject(ChangeDetectorRef);
 
   @ViewChild(FormStepperComponent) formStepper?: FormStepperComponent;
@@ -246,11 +250,19 @@ export class TmertEvaluationComponent implements OnInit, AfterViewInit {
         completedDate: new Date(),
       });
 
-      alert('Evaluación completada exitosamente');
+      // Recuperar la evaluación actualizada con todos los stages y metadatos
+      const finalEval = await this.evaluationService.getEvaluation(id);
+
+      if (finalEval) {
+        console.log('📄 Generando reporte en PDF...');
+        this.pdfService.generateEvaluationReport(finalEval);
+      }
+
+      alert('Evaluación completada exitosamente. Se ha descargado el Reporte PDF.');
       this.router.navigate(['/evaluations']);
     } catch (error) {
       console.error('Error saving evaluation:', error);
-      alert('Error al guardar la evaluación');
+      alert('Error al guardar la evaluación o generar el reporte');
     } finally {
       this.loading.set(false);
     }
@@ -304,8 +316,82 @@ export class TmertEvaluationComponent implements OnInit, AfterViewInit {
         status: 'in-progress',
       });
       console.log(`Step ${stepIndex} guardado exitosamente`);
+
+      // Si el usuario acaba de terminar la Etapa 3 (pasando a la Etapa 4, índice 3)
+      if (stepIndex === 3) {
+        // Verificar si ya tenemos datos de etapa 4 generados
+        const step4Key = 'step_3';
+        if (
+          !updatedStepsData[step4Key] ||
+          !updatedStepsData[step4Key]['advanced_assessment_result']
+        ) {
+          await this.runAiEvaluation(id, updatedStepsData);
+        }
+      }
     } catch (error) {
       console.error('Error saving step progress:', error);
+    }
+  }
+
+  /**
+   * Ejecuta la evaluación de la IA usando Cloud Functions
+   */
+  private async runAiEvaluation(evaluationId: string, currentStepsData: Record<string, any>) {
+    console.log('🤖 Iniciando Evaluación Avanzada con Inteligencia Artificial...');
+    this.loading.set(true);
+
+    try {
+      const payload = {
+        companyInfo: currentStepsData['step_0'],
+        workstationInfo: currentStepsData['step_1'], // Area/Puesto logic inside
+        initialAssessment: currentStepsData['step_2'], // Yes/No assessment
+      };
+
+      const response = await this.aiService.analyzeEvaluation(payload);
+
+      if (response.success && response.analysis) {
+        console.log('✅ AI Evaluation Exitosa', response.analysis);
+
+        // 1. Guardar resultados en el DTO de evaluación Firestore
+        await this.evaluationService.updateEvaluation(evaluationId, {
+          stage4: response.analysis.stage4,
+          stage5: response.analysis.stage5,
+        });
+
+        // 2. Parchear directamente los StepForms 3 y 4 (Frontend UI)
+        if (this.formStepper) {
+          const step4Form = this.formStepper.stepForms[3];
+          if (step4Form && response.analysis.stage4) {
+            step4Form.patchValue({
+              advanced_assessment_result: response.analysis.stage4.result,
+              advanced_assessment_justification: response.analysis.stage4.justification,
+            });
+            this.stepsData.set({
+              ...this.stepsData(),
+              step_3: step4Form.value,
+            });
+          }
+
+          const step5Form = this.formStepper.stepForms[4];
+          if (step5Form && response.analysis.stage5) {
+            step5Form.patchValue({
+              action_plan_measures: response.analysis.stage5,
+            });
+            this.stepsData.set({
+              ...this.stepsData(),
+              step_4: step5Form.value,
+            });
+          }
+          this.cdr.detectChanges();
+        }
+      }
+    } catch (error) {
+      console.error('❌ Error executing AI Evaluation', error);
+      alert(
+        'Hubo un problema al generar la evaluación automática. Puedes continuar e ingresar los datos manualmente.'
+      );
+    } finally {
+      this.loading.set(false);
     }
   }
 

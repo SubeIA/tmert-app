@@ -78,6 +78,39 @@
       }
     </div>
   </form>
+
+  @if (data.allowPhotos) {
+    <div class="photos-section">
+      <div class="photos-header">
+        <h3>Evidencia (Fotos)</h3>
+        <button mat-stroked-button color="accent" type="button" (click)="takePhoto()">
+          <mat-icon>camera_alt</mat-icon>
+          Tomar Foto
+        </button>
+      </div>
+
+      @if (photos.length > 0) {
+        <div class="photos-grid">
+          @for (photo of photos; track $index) {
+            <div class="photo-thumbnail">
+              <img [src]="photo" alt="Evidencia" />
+              <button
+                mat-icon-button
+                color="warn"
+                type="button"
+                class="remove-btn"
+                (click)="removePhoto($index)"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          }
+        </div>
+      } @else {
+        <p class="no-photos">No se han adjuntado fotos de evidencia.</p>
+      }
+    </div>
+  }
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">

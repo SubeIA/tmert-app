@@ -10,6 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { TableColumnConfig } from '@shared/models/form-field.model';
 import { FloatingChatComponent } from '@shared/components/floating-chat/floating-chat.component';
+import { CameraService } from '@core/services/camera/camera.service';
 
 export interface RowEditDialogData {
   columns: TableColumnConfig[];
@@ -23,6 +24,7 @@ export interface RowEditDialogData {
     companyId?: string;
     userId?: string;
   };
+  allowPhotos?: boolean;
 }
 
 export interface RowEditDialogResult {
@@ -53,8 +55,10 @@ export class RowEditDialogComponent implements OnInit {
   private fb = inject(FormBuilder);
   private dialogRef = inject(MatDialogRef<RowEditDialogComponent>);
   public data: RowEditDialogData = inject(MAT_DIALOG_DATA);
+  private cameraService = inject(CameraService);
 
   form!: FormGroup;
+  photos: string[] = [];
 
   ngOnInit(): void {
     this.buildForm();
@@ -82,6 +86,12 @@ export class RowEditDialogComponent implements OnInit {
     });
 
     this.form = this.fb.group(group);
+
+    if (this.data.allowPhotos) {
+      if (this.data.rowData && Array.isArray(this.data.rowData['evidenceUrls'])) {
+        this.photos = [...this.data.rowData['evidenceUrls']];
+      }
+    }
   }
 
   get dialogTitle(): string {
@@ -94,8 +104,13 @@ export class RowEditDialogComponent implements OnInit {
 
   onSave(): void {
     if (this.form.valid) {
+      const resultData = { ...this.form.value };
+      if (this.data.allowPhotos) {
+        resultData['evidenceUrls'] = this.photos;
+      }
+
       const result: RowEditDialogResult = {
-        data: this.form.value,
+        data: resultData,
         isNew: this.data.isNew,
         rowIndex: this.data.rowIndex,
       };
@@ -103,5 +118,16 @@ export class RowEditDialogComponent implements OnInit {
     } else {
       this.form.markAllAsTouched();
     }
+  }
+
+  async takePhoto(): Promise<void> {
+    const photo = await this.cameraService.takePhoto();
+    if (photo && photo.dataUrl) {
+      this.photos.push(photo.dataUrl);
+    }
+  }
+
+  removePhoto(index: number): void {
+    this.photos.splice(index, 1);
   }
 }

@@ -141,3 +141,5 @@ ios/
 android/
 /plugins
 /www
+.vercel
+.env*.local
