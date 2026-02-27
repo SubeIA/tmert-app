@@ -118,7 +118,14 @@ export class UsersComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(async result => {
       if (result) {
-        await this.createUser(result);
+        const createData: CreateUserData = {
+          email: result.email,
+          password: result.password,
+          name: result.name,
+          role: result.role,
+          companyIds: result.companies || [],
+        };
+        await this.createUser(createData);
       }
     });
   }
@@ -131,7 +138,13 @@ export class UsersComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(async result => {
       if (result) {
-        await this.updateUser(result);
+        const updateData: UpdateUserData = {
+          userId: result.id,
+          name: result.name,
+          role: result.role,
+          companyIds: result.companies || [],
+        };
+        await this.updateUser(updateData);
       }
     });
   }

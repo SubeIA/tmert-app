@@ -107,6 +107,16 @@ export const updateUser = onCall(async (request: CallableRequest<UpdateUserData>
   }
 
   try {
+    const userDocRef = admin.firestore().collection('users').doc(data.userId);
+    const userDoc = await userDocRef.get();
+
+    if (!userDoc.exists) {
+      throw new HttpsError('not-found', 'Usuario no encontrado');
+    }
+
+    const oldUserData = userDoc.data();
+    const oldCompanyIds: string[] = oldUserData?.companyIds || [];
+
     const updates: any = {
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     };
@@ -129,7 +139,34 @@ export const updateUser = onCall(async (request: CallableRequest<UpdateUserData>
       updates.companyIds = data.companyIds;
     }
 
-    await admin.firestore().collection('users').doc(data.userId).update(updates);
+    await userDocRef.update(updates);
+
+    if (data.companyIds !== undefined) {
+      const addedCompanies = data.companyIds.filter(id => !oldCompanyIds.includes(id));
+      const removedCompanies = oldCompanyIds.filter(id => !data.companyIds!.includes(id));
+
+      if (addedCompanies.length > 0 || removedCompanies.length > 0) {
+        const batch = admin.firestore().batch();
+
+        addedCompanies.forEach(companyId => {
+          const companyRef = admin.firestore().collection('companies').doc(companyId);
+          batch.update(companyRef, {
+            evaluatorIds: admin.firestore.FieldValue.arrayUnion(data.userId),
+            updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+          });
+        });
+
+        removedCompanies.forEach(companyId => {
+          const companyRef = admin.firestore().collection('companies').doc(companyId);
+          batch.update(companyRef, {
+            evaluatorIds: admin.firestore.FieldValue.arrayRemove(data.userId),
+            updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+          });
+        });
+
+        await batch.commit();
+      }
+    }
 
     return {
       success: true,
